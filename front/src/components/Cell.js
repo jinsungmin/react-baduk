@@ -12,14 +12,21 @@ export default class Cell extends Component {
 
     this.state = {
       clicked: false,
-      turn: false,
     }
   }
 
   handleClick = () => {
     console.log('this is:', this);
+    
     this.setState({
       clicked: true,
+    })
+  }
+
+  reset = () => {
+    this.setState({
+      clicked: false,
+      
     })
   }
 
@@ -602,6 +609,7 @@ export default class Cell extends Component {
         }
       }
     } else {  // -------------------------------------------------------------------------- 해당 셀을 클릭한 후
+        if(1) {
           return (
             <div
               style={{
@@ -619,6 +627,25 @@ export default class Cell extends Component {
                 </div>
             </div>
           )
+        } else {
+          return (
+            <div
+              style={{
+                width: this.props.width + 2,
+                height: this.props.height + 2,
+                backgroundColor: '#ffcc33',
+              }}>
+              <div
+              style={{
+                width: this.props.width + 2,
+                height: this.props.height + 2,
+                backgroundColor: '#ffcc33',
+              }}>
+                    <img src={blackStone} style={{ width:this.props.width + 2, height:this.props.height + 2}} resizeMode="stretch" />  
+                </div>
+            </div>
+          )
+        }
       
     }
   }
