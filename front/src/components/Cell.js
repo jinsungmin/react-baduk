@@ -19,12 +19,13 @@ export default class Cell extends Component {
   handleClick = () => {
     
     console.log('this is:', this);
-    console.log('turn is:', this.state.turn);
+    
     
     this.setState({
       clicked: true,  
     }, () => {
       this.props.turnCount(this.props.x, this.props.y);
+      console.log('turn is:', this.state.turn);
     });
   }
 
@@ -45,7 +46,7 @@ export default class Cell extends Component {
                 width: this.props.width + 2,
                 height: this.props.height + 2,
                 backgroundColor: '#ffcc33',
-              }}>
+            }}>
               <div style={{
                 width: this.props.width + 2,
                 height: this.props.height / 2 + 1,
@@ -57,8 +58,9 @@ export default class Cell extends Component {
                   float: 'left',
                   borderBottom: '1px solid #ffcc33',
                   borderRight: '1px solid #ffcc33',
+                
                 }}>
-
+                  
                 </div>
                 <div style={{
                   width: this.props.width / 2,

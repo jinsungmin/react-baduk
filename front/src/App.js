@@ -41,10 +41,10 @@ class App extends Component {
         this.grid[i][j].reset();
       }
     }
+    this.setState({
+      turn: 1,
+    })
   }
-
-
-
   renderBoard = () => {
     return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {     
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
