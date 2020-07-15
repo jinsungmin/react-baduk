@@ -1,0 +1,11 @@
+.mainBody {
+  background-color: yellow;
+  color: blue;
+  margin: 10px;
+  font-family: Arial;
+  text-align: center;
+}
+
+.body {
+  background-color: '#DDDDDD';
+}
