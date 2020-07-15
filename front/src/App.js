@@ -1,7 +1,7 @@
 import React, {View, Component } from 'react';
 import Cell from './components/Cell';
 
-const CELL_SIZE = 40;
+const CELL_SIZE = 36;
 const BOARD_SIZE = 19;
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
   renderBoard = () => {
     return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
-        return <Cell 
+        return <Cell
           key={colIdx}
           width={CELL_SIZE}
           height={CELL_SIZE}
