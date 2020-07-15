@@ -12,21 +12,25 @@ export default class Cell extends Component {
 
     this.state = {
       clicked: false,
+      turn: 0,
     }
   }
 
   handleClick = () => {
+    
     console.log('this is:', this);
+    console.log('turn is:', this.state.turn);
     
     this.setState({
-      clicked: true,
-    })
+      clicked: true,  
+    }, () => {
+      this.props.turnCount(this.props.x, this.props.y);
+    });
   }
 
   reset = () => {
     this.setState({
       clicked: false,
-      
     })
   }
 
@@ -609,7 +613,7 @@ export default class Cell extends Component {
         }
       }
     } else {  // -------------------------------------------------------------------------- 해당 셀을 클릭한 후
-        if(1) {
+        if(this.state.turn % 2 == 1) {
           return (
             <div
               style={{

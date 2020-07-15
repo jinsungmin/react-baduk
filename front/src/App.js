@@ -14,6 +14,25 @@ class App extends Component {
         return null;
       });
     });
+
+    this.state = {
+      turn: 1,
+    }
+
+    this.turnCount = this.turnCount.bind(this);
+  }
+
+  turnCount = (x, y) => {
+    const { turn } = this.state;
+    
+    this.setState({
+      turn: turn + 1,
+      
+    }, () => {
+      this.grid[x][y].setState({
+        turn: this.state.turn,
+      })
+    });
   }
 
   resetGame = () => {
@@ -24,22 +43,33 @@ class App extends Component {
     }
   }
 
+
+
   renderBoard = () => {
-    return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {
+    return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {     
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
+        
         return <Cell
+          turnCount={this.turnCount}
           key={colIdx}
           width={CELL_SIZE}
           height={CELL_SIZE}
           x={colIdx}
           y={rowIdx}
           ref={(ref) => { this.grid[colIdx][rowIdx] = ref}}
-            
         />
       });
       
       return (
-        <div key={rowIdx} style={{ width: this.boardWidth, height: CELL_SIZE, display:'flex', alignItems: 'flex-start' }}>
+        <div 
+        onClick={this.handleClick}
+        key={rowIdx} 
+        style={{ 
+          width: this.boardWidth, 
+          height: CELL_SIZE, 
+          display:'flex', 
+          alignItems: 'flex-start' 
+        }}>
           {cellList}
         </div>
       )
