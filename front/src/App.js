@@ -35,7 +35,7 @@ class App extends Component {
         lived: true,
       }, () => {
         console.log('turn is', this.grid[x][y].state.turn);
-        Rule(this.grid);
+        Rule(this.grid, x, y);
       })
     });
 
