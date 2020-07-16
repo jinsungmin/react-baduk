@@ -13,6 +13,7 @@ export default class Cell extends Component {
     this.state = {
       clicked: false,
       turn: 0,
+      lived: false,
     }
   }
 
@@ -20,23 +21,22 @@ export default class Cell extends Component {
     
     console.log('this is:', this);
     
-    
     this.setState({
       clicked: true,  
     }, () => {
       this.props.turnCount(this.props.x, this.props.y);
-      console.log('turn is:', this.state.turn);
     });
   }
 
   reset = () => {
     this.setState({
       clicked: false,
+      lived: false,
     })
   }
 
   render() {
-    if (!this.state.clicked) {  // 바둑판 클릭 전.
+    if (!this.state.lived) {  // 바둑판 클릭 전.
       if (this.props.y == 0) {
         if (this.props.x == 0) {  // 바둑판 왼쪽 위 끝
           return (
@@ -614,8 +614,8 @@ export default class Cell extends Component {
           )
         }
       }
-    } else {  // -------------------------------------------------------------------------- 해당 셀을 클릭한 후
-        if(this.state.turn % 2 == 1) {
+    } else {  // -------------------------------------------------------------------------- 해당 셀을 클릭한 후  
+      if(this.state.turn % 2 == 0) {
           return (
             <div
               style={{

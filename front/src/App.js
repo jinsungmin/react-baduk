@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Cell from './components/Cell';
 
+import Rule from './Rule';
+
 const CELL_SIZE = 36;
 const BOARD_SIZE = 19;
 
@@ -16,7 +18,7 @@ class App extends Component {
     });
 
     this.state = {
-      turn: 1,
+      turn: 0,
     }
 
     this.turnCount = this.turnCount.bind(this);
@@ -27,12 +29,17 @@ class App extends Component {
     
     this.setState({
       turn: turn + 1,
-      
     }, () => {
       this.grid[x][y].setState({
         turn: this.state.turn,
+        lived: true,
+      }, () => {
+        console.log('turn is', this.grid[x][y].state.turn);
+        Rule(this.grid);
       })
     });
+
+    
   }
 
   resetGame = () => {
@@ -42,9 +49,10 @@ class App extends Component {
       }
     }
     this.setState({
-      turn: 1,
+      turn: 0,
     })
   }
+
   renderBoard = () => {
     return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {     
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
@@ -62,7 +70,6 @@ class App extends Component {
       
       return (
         <div 
-        onClick={this.handleClick}
         key={rowIdx} 
         style={{ 
           width: this.boardWidth, 
