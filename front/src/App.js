@@ -3,6 +3,9 @@ import Cell from './components/Cell';
 
 import Rule from './Rule';
 
+const whiteStone = require('./assets/img/white-stone.png');
+const blackStone = require('./assets/img/black-stone.png');
+
 const CELL_SIZE = 36;
 const BOARD_SIZE = 19;
 
@@ -130,7 +133,40 @@ class App extends Component {
             }}
           >
             Reset
-          </button>
+          </button>    
+        </div>
+        <div style={{
+          position: 'absolute',
+          top: '8%',
+          left: '70%',
+          backgroundColor: 'white',
+        }}>
+          <div style={{
+            width: 400, 
+            height: 680, 
+            border: '1px solid black',
+            fontSize: 20,
+          }}>
+            <div style={{
+              width: 198,
+              height: 680,
+              display: 'inline-block',
+              float: 'left',
+              border: '1px solid black'
+            }}>
+              <img src={whiteStone} style={{ width:CELL_SIZE, height:CELL_SIZE}} />
+            
+            </div>
+            <div style={{
+              width: 198,
+              height: 680,
+              display: 'inline-block',
+              float: 'left',
+              border: '1px solid black'
+            }}>
+              <img src={blackStone} style={{ width:CELL_SIZE, height:CELL_SIZE}} />
+            </div>
+          </div>
         </div>
       </div> 
     );
