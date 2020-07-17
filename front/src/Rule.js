@@ -10,12 +10,13 @@ const dy = [0, 1, 0, -1];
 function Rule(grid, x, y, component) {
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
-
+      // 입력한 돌과 색이 같지 않은 돌 && 살아있는 돌
       if ((grid[i][j].state.turn % 2 != grid[x][y].state.turn % 2) && grid[i][j].state.lived) {
         checkLife(grid, i, j, x, y, component);
       }
     }
   }
+  checkLife(grid, x, y, x, y, component);
 
 }
 
@@ -53,7 +54,7 @@ function checkLife(grid, x, y, ox, oy, component) { // 죽은 돌 제거
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
 
-          if (lived == 2) {
+          if (lived == 2) { //기준 돌이 둘러싸여 있고 둘러싼 돌의 개수가 '<= 4' 일  경우
             if (dct[i][j]) {
               pae = ban(grid, ox, oy, i, j);
               if (pae) {
@@ -67,11 +68,29 @@ function checkLife(grid, x, y, ox, oy, component) { // 죽은 돌 제거
               }
             }
           }
+
           if (dct[i][j]) {
             if (pae) {
-              grid[i][j].setState({
-                lived: false,
-              });
+              if (i == ox && j == oy) {
+                grid[ox][oy].setState({
+                  lived: false,
+                  clicked: false,
+                  turn: grid[ox][oy].state.turn - 1,
+                }, () => {
+                  component.setState({
+                    turn: grid[ox][oy].state.turn,
+                  }, () => {
+                    alert('banned');
+                  })
+                })
+              } else {
+                if(x != ox || y != oy) {
+                  grid[i][j].setState({
+                    lived: false,
+                  });
+                }
+              }
+
             } else {
               console.log('pae');
               grid[ox][oy].setState({
@@ -119,7 +138,7 @@ function surround(grid, dct) {
   }
 
   if ((surStone == sur) && surStone != 0) {
-    if (surStone == 4) {
+    if (surStone <= 4) {
       return 2;
     }
     return 0;
