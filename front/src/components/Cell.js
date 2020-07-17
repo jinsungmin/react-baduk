@@ -14,6 +14,10 @@ export default class Cell extends Component {
       clicked: false,
       turn: 0,
       lived: false,
+      kill: {
+        x: null,
+        y: null,
+      },
     }
   }
 

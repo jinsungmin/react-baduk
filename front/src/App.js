@@ -35,12 +35,22 @@ class App extends Component {
         lived: true,
       }, () => {
         console.log('turn is', this.grid[x][y].state.turn);
-        Rule(this.grid, x, y);
+        //alert("(" + x + ", " + y + ")");
+        //Rule(this.grid, x, y);
+        Rule(this.grid, x, y, this);
+        
       })
     });
-
-    
   }
+  /*
+  turnBack = (grid,x,y) => {
+    return new Promise(function(resolve, reject) {
+      Rule(grid, x, y);
+      console.log('1');
+      resolve();
+    })
+  }
+  */
 
   resetGame = () => {
     for(let i = 0; i<BOARD_SIZE; i++) {
