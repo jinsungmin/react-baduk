@@ -22,6 +22,8 @@ class App extends Component {
 
     this.state = {
       turn: 0,
+      dieBS: 0,
+      dieWS: 0,
     }
 
     this.turnCount = this.turnCount.bind(this);
@@ -63,7 +65,25 @@ class App extends Component {
     }
     this.setState({
       turn: 0,
+      dieBS: 0,
+      dieWS: 0,
     })
+  }
+
+  countDeadStone = (color) => {
+    if(color == this.state.dieBS) {
+      return (
+        <div>
+          {this.state.dieBS}
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          {this.state.dieWS}
+        </div>
+      )
+    }
   }
 
   renderBoard = () => {
@@ -155,7 +175,8 @@ class App extends Component {
               border: '1px solid black'
             }}>
               <img src={whiteStone} style={{ width:CELL_SIZE, height:CELL_SIZE}} />
-            
+              <br/>
+              {this.countDeadStone(this.state.dieBS)}
             </div>
             <div style={{
               width: 198,
@@ -165,6 +186,8 @@ class App extends Component {
               border: '1px solid black'
             }}>
               <img src={blackStone} style={{ width:CELL_SIZE, height:CELL_SIZE}} />
+              <br/>
+              {this.countDeadStone(this.state.dieWS)}
             </div>
           </div>
         </div>

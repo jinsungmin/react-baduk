@@ -5,17 +5,39 @@
 const BOARD_SIZE = 19;
 const dx = [-1, 0, 1, 0];
 const dy = [0, 1, 0, -1];
+let deathCount = 0;
 
 function Rule(grid, x, y, component) {
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
       // 입력한 돌과 색이 같지 않은 돌 && 살아있는 돌
       if ((grid[i][j].state.turn % 2 != grid[x][y].state.turn % 2) && grid[i][j].state.lived) {
-        checkLife(grid, i, j, x, y, component);
+        checkLife(grid, i, j, x, y, component); // 입력한 돌이 잡을 수 있는 돌을 판별
       }
     }
   }
-  checkLife(grid, x, y, x, y, component);
+  // 사석 추가
+  setTimeout(() => {
+    if (grid[x][y].state.turn % 2 == 0) {
+      component.setState({
+        dieWS: component.state.dieWS + Math.pow(deathCount, 1/3),
+      }, () => {
+        console.log('WSdie:', component.state.dieWS);
+      })
+    } else {
+      component.setState({
+        dieBS: component.state.dieBS + Math.pow(deathCount, 1/3),
+      }, () => {
+        console.log('BSdie:', component.state.dieBS);
+      })
+    }
+    deathCount = 0;
+  }, 20);
+
+  // 입력한 돌의 생사 확인.
+  setTimeout(() => {
+    checkLife(grid, x, y, x, y, component);
+  }, 10);
 
 }
 
@@ -45,14 +67,22 @@ function checkLife(grid, x, y, ox, oy, component) { // 죽은 돌 제거
   let dct = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(false));
   if (grid[x][y].state.lived) { // 기준 돌이 살아있을 경우
     dct[x][y] = true;
-
+    let count = 0;
     findSameStone(grid, grid[x][y].state.turn % 2, x, y, dct);
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
+        if (dct[i][j]) {
+          count++;
+        }
+      }
+    }
+
     let lived = surround(grid, dct);
+    let banned = 0;
     let pae = true;
     if (lived != 1) {
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
-
           if (lived == 2) { //기준 돌이 둘러싸여 있고 둘러싼 돌의 개수가 '<= 4' 일  경우
             if (dct[i][j]) {
               pae = ban(grid, ox, oy, i, j);
@@ -63,14 +93,16 @@ function checkLife(grid, x, y, ox, oy, component) { // 죽은 돌 제거
                     y: j,
                   }
                 }, () => {
+                  if (i != ox && j != oy)
+                    banned = 1;
                 })
               }
             }
           }
 
-          if (dct[i][j]) {
+          if (dct[i][j]) {  // 기준 돌로 부터 연속된 돌들
             if (pae) {
-              if (i == ox && j == oy) {
+              if (i == ox && j == oy && banned != 1) { // 자살수 금지.
                 grid[ox][oy].setState({
                   lived: false,
                   clicked: false,
@@ -82,14 +114,15 @@ function checkLife(grid, x, y, ox, oy, component) { // 죽은 돌 제거
                     alert('banned');
                   })
                 })
-              } else {
-                if(x != ox || y != oy) {
+              } else {  // 죽은 돌 제거
+                if (x != ox || y != oy) {
                   grid[i][j].setState({
                     lived: false,
+                  }, () => {
+                    deathCount += count;
                   });
                 }
               }
-
             } else {
               console.log('pae');
               grid[ox][oy].setState({
@@ -100,7 +133,6 @@ function checkLife(grid, x, y, ox, oy, component) { // 죽은 돌 제거
                 component.setState({
                   turn: grid[ox][oy].state.turn,
                 }, () => {
-                  //console.log('final turn:', component.state.turn);
                   alert('pae');
                 })
               })
@@ -119,7 +151,6 @@ function surround(grid, dct) {
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
       if (dct[i][j]) {
-        //console.log('dct:', i, j);
         for (let v = 0; v < 4; v++) {
           if (isInside(i + dx[v], j + dy[v])) {
             // 인접한 것중 기준 돌과 다른 것 전부 체크
