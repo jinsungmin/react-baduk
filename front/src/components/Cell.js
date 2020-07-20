@@ -22,13 +22,10 @@ export default class Cell extends Component {
   }
 
   handleClick = () => {
-    
-    console.log('this is:', this);
-    
     this.setState({
       clicked: true,  
     }, () => {
-      this.props.turnCount(this.props.x, this.props.y);
+      this.props.postClickedCellInfor(this.props.x, this.props.y);
     });
   }
 
@@ -633,7 +630,7 @@ export default class Cell extends Component {
                 height: this.props.height + 2,
                 backgroundColor: '#ffcc33',
               }}>
-                    <img src={whiteStone} style={{ width:this.props.width + 2, height:this.props.height + 2}} resizeMode="stretch" />  
+                    <img src={whiteStone} style={{ width:this.props.width + 2, height:this.props.height + 2}} />  
                 </div>
             </div>
           )
@@ -651,7 +648,7 @@ export default class Cell extends Component {
                 height: this.props.height + 2,
                 backgroundColor: '#ffcc33',
               }}>
-                    <img src={blackStone} style={{ width:this.props.width + 2, height:this.props.height + 2}} resizeMode="stretch" />  
+                    <img src={blackStone} style={{ width:this.props.width + 2, height:this.props.height + 2}} />  
                 </div>
             </div>
           )

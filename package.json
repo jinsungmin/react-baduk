@@ -4,16 +4,20 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
     "concurrently": "^5.2.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.5",
     "nodemon": "^2.0.4"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon server.js",
-    "front" : "cd front && npm start",
-    "dev" : "concurrently \"npm run server\" \"npm run front\""
+    "server": "cd backend && nodemon server.js",
+    "front": "cd front && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run front\""
   },
   "author": "",
   "license": "ISC"

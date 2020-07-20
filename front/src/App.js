@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Cell from './components/Cell';
-
-import Rule from './Rule';
+import Data from './Data';
+import axios from "axios";
 
 const whiteStone = require('./assets/img/white-stone.png');
 const blackStone = require('./assets/img/black-stone.png');
@@ -25,53 +25,92 @@ class App extends Component {
       dieBS: 0,
       dieWS: 0,
     }
-
-    this.turnCount = this.turnCount.bind(this);
+  
+    this.postClickedCellInfor = this.postClickedCellInfor.bind(this);
   }
 
-  turnCount = (x, y) => {
-    const { turn } = this.state;
-    
-    this.setState({
-      turn: turn + 1,
-    }, () => {
-      this.grid[x][y].setState({
-        turn: this.state.turn,
-        lived: true,
-      }, () => {
-        console.log('turn is', this.grid[x][y].state.turn);
-        //alert("(" + x + ", " + y + ")");
-        //Rule(this.grid, x, y);
-        Rule(this.grid, x, y, this);
-        
-      })
-    });
-  }
-  /*
-  turnBack = (grid,x,y) => {
-    return new Promise(function(resolve, reject) {
-      Rule(grid, x, y);
-      console.log('1');
-      resolve();
-    })
-  }
-  */
+  componentWillMount() {
+    this.resetGame = this.resetGame.bind(this);
 
-  resetGame = () => {
-    for(let i = 0; i<BOARD_SIZE; i++) {
-      for(let j = 0; j<BOARD_SIZE; j++) {
-        this.grid[i][j].reset();
+    if (window.performance) {
+      if (performance.navigation.type == 1) {
+        this.resetGame();
       }
     }
-    this.setState({
-      turn: 0,
-      dieBS: 0,
-      dieWS: 0,
+  }
+
+  callBackServer = async (x, y) => {
+    await axios.get('/data').then((data) => {
+      //console.log("backserver data : ", data.data);
+      if(this.state.turn === data.data.board[x][y].turn) {
+        alert('It is a place that cannot be placed');
+      }
+      this.setState({
+        turn: data.data.board[x][y].turn,
+      }, () => {
+        console.log('turn:', this.state.turn);
+
+        for(let i = 0; i< BOARD_SIZE; i++) {
+          for(let j = 0; j < BOARD_SIZE; j++) {
+            this.setState({
+              dieBS: data.data.deadStone.blackStone,
+              dieWS: data.data.deadStone.whiteStone,
+            }, () => {
+              this.grid[i][j].setState({
+                turn: data.data.board[i][j].turn,
+                lived: data.data.board[i][j].lived,
+              })
+            })
+          }
+        }
+      });
+    });
+  };
+
+  postClickedCellInfor =  async (x, y) => {
+    console.log('post:', x, y);
+    await axios.post('/data', {
+      data: {
+        turn: this.state.turn,
+        x: x,
+        y: y,
+      }
     })
+    .then(function(response) {
+      //console.log('callBack:',response);
+    })
+    .catch(function(error){
+    });
+    await this.callBackServer(x, y);
+  }
+
+  resetGame = async () => {
+    await axios.get('/data/reset').then((data) => {
+      //console.log("backserver data : ", data);
+      this.setState({
+        turn: 0,
+      }, () => {
+        for(let i = 0; i< BOARD_SIZE; i++) {
+          for(let j = 0; j < BOARD_SIZE; j++) {
+            this.setState({
+              dieBS: data.data.deadStone.blackStone,
+              dieWS: data.data.deadStone.whiteStone,
+            }, () => {
+              this.grid[i][j].setState({
+                turn: data.data.board[i][j].turn,
+                lived: data.data.board[i][j].lived,
+                clicked: false,
+              })
+            })    
+          }
+        }     
+      });
+    });
+    
   }
 
   countDeadStone = (color) => {
-    if(color == this.state.dieBS) {
+    if(color === this.state.dieBS) {
       return (
         <div>
           {this.state.dieBS}
@@ -91,7 +130,8 @@ class App extends Component {
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
         
         return <Cell
-          turnCount={this.turnCount}
+          //turnCount={this.turnCount}
+          postClickedCellInfor={this.postClickedCellInfor}
           key={colIdx}
           width={CELL_SIZE}
           height={CELL_SIZE}
@@ -117,6 +157,7 @@ class App extends Component {
   }
 
   render() {
+    
     return (
       <div style={{
         width: '100%',
