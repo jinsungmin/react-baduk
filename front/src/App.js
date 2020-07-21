@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Cell from './components/Cell';
-import Data from './Data';
 import axios from "axios";
 
 const whiteStone = require('./assets/img/white-stone.png');
@@ -25,15 +24,13 @@ class App extends Component {
       dieBS: 0,
       dieWS: 0,
     }
-  
+    this.resetGame = this.resetGame.bind(this);
     this.postClickedCellInfor = this.postClickedCellInfor.bind(this);
   }
 
   componentWillMount() {
-    this.resetGame = this.resetGame.bind(this);
-
     if (window.performance) {
-      if (performance.navigation.type == 1) {
+      if (performance.navigation.type === 1) {
         this.resetGame();
       }
     }
@@ -42,6 +39,7 @@ class App extends Component {
   callBackServer = async (x, y) => {
     await axios.get('/data').then((data) => {
       //console.log("backserver data : ", data.data);
+      console.log('get turn:', data.data.board[x][y].turn);
       if(this.state.turn === data.data.board[x][y].turn) {
         alert('It is a place that cannot be placed');
       }
@@ -49,7 +47,7 @@ class App extends Component {
         turn: data.data.board[x][y].turn,
       }, () => {
         console.log('turn:', this.state.turn);
-
+        console.log('test DS:', data.data.deadStone.blackStone, data.data.deadStone.whiteStone);
         for(let i = 0; i< BOARD_SIZE; i++) {
           for(let j = 0; j < BOARD_SIZE; j++) {
             this.setState({
@@ -68,7 +66,7 @@ class App extends Component {
   };
 
   postClickedCellInfor =  async (x, y) => {
-    console.log('post:', x, y);
+    console.log('post(turn,x,y): ',this.state.turn, x, y, );
     await axios.post('/data', {
       data: {
         turn: this.state.turn,
@@ -86,7 +84,6 @@ class App extends Component {
 
   resetGame = async () => {
     await axios.get('/data/reset').then((data) => {
-      //console.log("backserver data : ", data);
       this.setState({
         turn: 0,
       }, () => {
@@ -97,7 +94,7 @@ class App extends Component {
               dieWS: data.data.deadStone.whiteStone,
             }, () => {
               this.grid[i][j].setState({
-                turn: data.data.board[i][j].turn,
+                turn: 0,
                 lived: data.data.board[i][j].lived,
                 clicked: false,
               })

@@ -38,8 +38,8 @@ export default class Cell extends Component {
 
   render() {
     if (!this.state.lived) {  // 바둑판 클릭 전.
-      if (this.props.y == 0) {
-        if (this.props.x == 0) {  // 바둑판 왼쪽 위 끝
+      if (this.props.y === 0) {
+        if (this.props.x === 0) {  // 바둑판 왼쪽 위 끝
           return (
             <div
               onClick={this.handleClick}
@@ -103,7 +103,7 @@ export default class Cell extends Component {
 
             </div>
           )
-        } else if (this.props.x == 18) {  // 바둑판 오른쪽 위 끝
+        } else if (this.props.x === 18) {  // 바둑판 오른쪽 위 끝
           return (
             <div
               onClick={this.handleClick} 
@@ -231,8 +231,8 @@ export default class Cell extends Component {
           )
         }
 
-      } else if (this.props.y == 18) {
-        if (this.props.x == 0) {  // 바둑판 왼쪽 아래 끝
+      } else if (this.props.y === 18) {
+        if (this.props.x === 0) {  // 바둑판 왼쪽 아래 끝
           return (
             <div 
             onClick={this.handleClick}
@@ -295,7 +295,7 @@ export default class Cell extends Component {
 
             </div>
           )
-        } else if (this.props.x == 18) {  // 바둑판 오른쪽 아래 끝
+        } else if (this.props.x === 18) {  // 바둑판 오른쪽 아래 끝
           return (
             <div 
             onClick={this.handleClick}
@@ -424,7 +424,7 @@ export default class Cell extends Component {
         }
       }
       else {
-        if (this.props.x == 0) {  // 바둑판 중앙 왼쪽 끝
+        if (this.props.x === 0) {  // 바둑판 중앙 왼쪽 끝
           return (
             <div 
             onClick={this.handleClick}
@@ -487,7 +487,7 @@ export default class Cell extends Component {
 
             </div>
           )
-        } else if (this.props.x == 18) { // 바둑판 중앙 오른쪽 끝
+        } else if (this.props.x === 18) { // 바둑판 중앙 오른쪽 끝
           return (
             <div 
             onClick={this.handleClick}
@@ -616,7 +616,7 @@ export default class Cell extends Component {
         }
       }
     } else {  // -------------------------------------------------------------------------- 해당 셀을 클릭한 후  
-      if(this.state.turn % 2 == 0) {
+      if(this.state.turn % 2 === 0) {
           return (
             <div
               style={{

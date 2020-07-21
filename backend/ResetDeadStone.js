@@ -1,5 +1,3 @@
-const BOARD_SIZE = 19;
-
 async function ResetDeadStone(deadStone) {
   deadStone.blackStone = 0;
   deadStone.whiteStone = 0;

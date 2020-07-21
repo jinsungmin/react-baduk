@@ -20,8 +20,8 @@ const BOARD_SIZE = 19;
 
 let board = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
 let deadStone = {
-  blackStone: null,
-  whiteStone: null,
+  blackStone: 0,
+  whiteStone: 0,
 };
 
 let infor = {
@@ -29,14 +29,13 @@ let infor = {
   deadStone: null,
 }
 
-deadStone = resetDeadStone(deadStone);
 board = resetBoard(board);
 
 app.get('/data',(req,res)=>{
-    infor.board = board;
-    infor.deadStone = deadStone;
-    
-    res.json(infor);  
+  infor.board = board;
+  infor.deadStone = deadStone;
+
+  res.json(infor);  
 })
 
 app.get('/data/reset',async (req,res)=>{

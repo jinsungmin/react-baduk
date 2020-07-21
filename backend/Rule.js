@@ -8,7 +8,7 @@ const dy = [0, 1, 0, -1];
 let deathCount = 0;
 
 async function Rule(grid, data, deadStone) {
-  console.log(grid[data.x][data.y].lived);
+  
   grid[data.x][data.y].turn = data.turn + 1;
   grid[data.x][data.y].lived = true;
 
@@ -22,17 +22,22 @@ async function Rule(grid, data, deadStone) {
   }
 
   // 사석 추가
-  if (grid[data.x][data.y].turn % 2 == 0) {
-    deadStone.whiteStone += Math.sqrt(deathCount);
-  } else {
-    deadStone.blackStone += Math.sqrt(deathCount);
-  }
-  deathCount = 0;
+  await addDeadStone(grid, data, deadStone);
 
   // 입력한 돌의 생사 확인.
   await checkLife(grid, data.x, data.y, data.x, data.y);
   
+  console.log('now:', grid[data.x][data.y].turn);
   return grid;
+}
+
+function addDeadStone(grid, data, deadStone) {
+  if (grid[data.x][data.y].turn % 2 == 0) {
+    deadStone.whiteStone += deathCount;
+  } else {
+    deadStone.blackStone += deathCount;
+  }
+  deathCount = 0;
 }
 
 function isInside(x, y) {
@@ -43,16 +48,9 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
   let dct = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(false));
   if (grid[x][y].lived) { // 기준 돌이 살아있을 경우
     dct[x][y] = true;
-    let count = 0;
+    
     findSameStone(grid, grid[x][y].turn % 2, x, y, dct);
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      for (let j = 0; j < BOARD_SIZE; j++) {
-        if (dct[i][j]) {
-          count++;
-        }
-      }
-    }
-
+    
     let lived = surround(grid, dct);
     let banned = 0;
     let pae = true;
@@ -82,7 +80,7 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
               } else {  // 죽은 돌 제거
                 if (x != ox || y != oy) {
                   grid[i][j].lived = false;
-                  deathCount += count;
+                  deathCount += 1;
                 }
               }
             } else {
