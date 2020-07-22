@@ -7,6 +7,7 @@ import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import Messages from '../Messages/Messages';
 import Board from '../Board/Board';
+import Temp from '../Temp/Temp';
 
 let socket;
 
@@ -15,13 +16,18 @@ const Game = ({ location }) => {
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+
+  const [turn, setTurn] = useState(0);
+  const [board, setBoard] = useState('');
   const ENDPOINT = 'localhost:5000';
 
   useEffect(() => {
+    console.log(location.search);
     const { name, room } = queryString.parse(location.search);
-
+    
     socket = io(ENDPOINT);
-
+    
+    setTurn(0);
     setName(name);
     setRoom(room);
 
@@ -42,6 +48,19 @@ const Game = ({ location }) => {
     })
   }, [messages]);
 
+  useEffect(() => {
+    socket.on('turn', (turn) => {
+      console.log('get turn:',turn.turn);
+      setTurn(turn.turn);
+    })
+  }, [turn]);
+
+  useEffect(() => {
+    socket.on('board', (board) => {
+      setBoard(board);
+    })
+  }, [board]);
+
   // function for sending messages
 
   const sendMessage = (event) => {
@@ -52,16 +71,24 @@ const Game = ({ location }) => {
     }
   }
 
-  console.log(message, messages);
+  const placeStone = (turn) => {
+    console.log('ccc', turn);
+    if(turn) {
+      socket.emit('placeStone', turn, () => setTurn(turn));
+    }
+  }
+
+  //console.log(message, messages);
 
   return (  
     <div className="outerContainer">
-      <Board />
+      <Temp turn={turn} board={board} placeStone={placeStone} />
       <div className="container">
         <InfoBar room={room} />
         <Messages messages={messages} name={name} />
         <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
       </div>
+      {turn}
     </div>
   )
 }

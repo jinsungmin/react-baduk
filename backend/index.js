@@ -46,6 +46,17 @@ io.on('connection', (socket) => {
     callback();
   });
 
+  socket.on('placeStone', (turn, callback) => {
+    const user = getUser(socket.id);
+
+    io.to(user.room).emit('turn', { turn: turn});
+    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+
+    callback();
+  });
+
+  // 착수 후 보드 처리 socket 추가
+
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
 
@@ -97,7 +108,6 @@ app.get('/data/reset',async (req,res)=>{
 })
 
 app.post('/data', async (req, res) => { // data를 받을때 (클릭한 x,y 좌표) + 현재 turn
-  console.log('test');
   console.log(req.body.data);
 
   board = await Rule(board, req.body.data, deadStone);

@@ -27,7 +27,7 @@ async function Rule(grid, data, deadStone) {
   // 입력한 돌의 생사 확인.
   await checkLife(grid, data.x, data.y, data.x, data.y);
   
-  console.log('now:', grid[data.x][data.y].turn);
+  //console.log('now:', grid[data.x][data.y].turn);
   return grid;
 }
 
