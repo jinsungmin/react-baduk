@@ -31,6 +31,7 @@ let grid = Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
 const Game = ({ location }) => {
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
+  const [color, setColor] = useState(0);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
@@ -47,8 +48,13 @@ const Game = ({ location }) => {
     setRoom(room);
 
     resetGame();
-    socket.emit('join', { name, room }, () => {
 
+    socket.on('stoneColor', ({color}) => {
+      console.log('color:', color);
+      setColor(color-1);
+    })
+    
+    socket.emit('join', { name, room }, () => {
     });
 
     return () => {
@@ -57,6 +63,7 @@ const Game = ({ location }) => {
       socket.off();
     }
   }, [ENDPOINT, location.search]);
+
 
   useEffect(() => {
     socket.on('message', (message) => {
@@ -140,6 +147,7 @@ const Game = ({ location }) => {
   };
 
   const postClickedCellInfor = async (x, y) => {
+    if(turn % 2 === color) {
     console.log('post(turn,x,y): ', turn, x, y);
     await axios.post('/data', {
       data: {
@@ -154,6 +162,9 @@ const Game = ({ location }) => {
       .catch(function (error) {
       });
     await callBackServer(x, y);
+    } else {
+      alert('No your Turn');
+    }
   }
 
   const renderBoard = () => {
@@ -228,6 +239,7 @@ const Game = ({ location }) => {
             Reset
         </button>
         </div>
+        {color}
       <div className="container">
         
         <InfoBar room={room} />
@@ -237,6 +249,7 @@ const Game = ({ location }) => {
             <div style={{marginTop: 10,}}>
             {killBlackStone}
             </div>
+            
           </div>
           <div className="whiteStone">
           <div style={{marginTop: 10, }}>
