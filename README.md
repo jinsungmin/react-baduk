@@ -1,3 +1,3 @@
 # react-baduk
 
-<img width="928" alt="캡처" src="https://user-images.githubusercontent.com/48236363/87805983-284a6a00-c891-11ea-9915-ebc7f6410794.PNG">
+<img width="960" alt="baduk" src="https://user-images.githubusercontent.com/48236363/88255919-b5a81700-ccf4-11ea-8fde-4128ea883cf3.PNG">

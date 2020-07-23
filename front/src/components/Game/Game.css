@@ -12,8 +12,30 @@
   justify-content: space-between;
   background: #FFFFFF;
   border-radius: 8px;
-  height: 60%;
+  height: 100%;
   width: 30%;
+}
+
+.stone {
+  display: flex;
+  height: 20%;
+  justify-content: space-between;
+}
+
+.blackStone {
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+  font-size: 20px;
+  text-align: center;
+}
+
+.whiteStone {
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 20px;
+  text-align: center;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
