@@ -19,8 +19,8 @@ const boardWidth = CELL_SIZE * BOARD_SIZE;
 
 let socket;
 
-let killWhiteStone;
-let killBlackStone;
+//let killWhiteStone;
+//let killBlackStone;
 
 let grid = Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
   return Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
@@ -34,6 +34,8 @@ const Game = ({ location }) => {
   const [color, setColor] = useState(0);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [killWhiteStone, setKillWhiteStone] = useState(0);
+  const [killBlackStone, setKillBlackStone] = useState(0);
 
   const [turn, setTurn] = useState(0);
   const ENDPOINT = 'localhost:5000';
@@ -67,7 +69,6 @@ const Game = ({ location }) => {
 
   useEffect(() => {
     socket.on('message', (message) => {
-      console.log('123');
       setMessages([...messages, message]);
     })
   }, [messages]);
@@ -91,7 +92,6 @@ const Game = ({ location }) => {
   }
 
   const placeStone = (turn) => {
-    console.log('111');
     socket.emit('placeStone', turn, () => {
     });
   }
@@ -103,8 +103,8 @@ const Game = ({ location }) => {
       //getBoard();
     });
   }
-
-  const getBoard = async () => {
+  // 착수 후 서버에서 받은 보드를 front에 적용하는 함수
+  const getBoard = async () => { 
     await axios.get('/data/board').then((data) => {
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
@@ -114,23 +114,22 @@ const Game = ({ location }) => {
           })
         }
       }
-      killWhiteStone = data.data.deadStone.whiteStone;
-      killBlackStone = data.data.deadStone.blackStone;
+      //killWhiteStone = data.data.deadStone.whiteStone;
+      //killBlackStone = data.data.deadStone.blackStone;
+      setKillWhiteStone(data.data.deadStone.whiteStone);
+      setKillBlackStone(data.data.deadStone.blackStone);
     })
   }
 
   const callBackServer = async (x, y) => {
     await axios.get('/data').then((data) => {
-      //console.log("backserver data : ", data.data);
-      //console.log('get turn:', data.data.board[x][y].turn);
-
+      
       if (turn === data.data.board[x][y].turn) {
         alert('It is a place that cannot be place');
       }
 
       console.log('turn:', data.data.board[x][y].turn);
-      //console.log('test DS:', data.data.deadStone.blackStone, data.data.deadStone.whiteStone);
-
+      
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
           grid[i][j].setState({
@@ -139,11 +138,8 @@ const Game = ({ location }) => {
           })
         }
       }
-      //board = data.data.board;
-      //console.log(board);
       placeStone(data.data.board[x][y].turn);
     });
-
   };
 
   const postClickedCellInfor = async (x, y) => {
