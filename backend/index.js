@@ -107,6 +107,13 @@ app.get('/data/reset',async (req,res)=>{
   res.json(infor);
 })
 
+app.get('/data/board', async (req, res) => {
+  infor.board = board;
+  infor.deadStone = deadStone;
+
+  res.json(infor);
+})
+
 app.post('/data', async (req, res) => { // data를 받을때 (클릭한 x,y 좌표) + 현재 turn
   console.log(req.body.data);
 
