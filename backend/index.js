@@ -18,7 +18,24 @@ const router = require('./router');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
 let count = 0;
+const BOARD_SIZE = 19;
+
+let serverBoards = [];
+
+var Data = function(roomName, board, deadStone) {
+  this.roomName = roomName;
+  this.board = board;
+  this.deadStone = deadStone;
+}
+
+let deadStone = {
+  blackStone: 0,
+  whiteStone: 0,
+};
+
+let board = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
 
 io.on('connection', (socket) => {
   console.log('We have a new connection.');
@@ -27,13 +44,23 @@ io.on('connection', (socket) => {
     const { error, user } = addUser({id: socket.id, name, room });
 
     if(error) return callback(error);
-
-    console.log('total user count:', users.length);
+    
     for(let i = 0; i < users.length; i++) {
       if(user.room === users[i].room) {
         count++;
       }
     }
+
+    if(count === 1) {
+      let tempBoard = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
+      tempBoard= resetBoard(tempBoard);
+      serverBoards.push(new Data(user.room, tempBoard, resetDeadStone(deadStone)));
+    }
+    
+    console.log('total user count:', users.length);
+    
+    console.log('serverBoardsLength:',serverBoards.length);
+
     socket.emit('stoneColor', {color: count});
     count = 0;
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}` });
@@ -84,52 +111,65 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(bodyParser.json()); // for parsing application/json
 
-const BOARD_SIZE = 19;
-
-let board = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
-
-let deadStone = {
-  blackStone: 0,
-  whiteStone: 0,
-};
-
 let infor = {
   board: null,
   deadStone: null,
 }
 
-board = resetBoard(board);
+//board = resetBoard(board);
 
-app.get('/data',(req,res)=>{
-  infor.board = board;
-  infor.deadStone = deadStone;
+app.post('/data/modify', async (req,res)=>{
+  for(let i = 0; i < serverBoards.length; i++) {
+    if(req.body.data.room === serverBoards[i].roomName) {
+      infor.board = await serverBoards[i].board;
+      infor.deadStone = await serverBoards[i].deadStone; 
+      
+      break;
+    }
+  }
 
   res.json(infor);  
 })
 
-app.get('/data/reset',async (req,res)=>{
-  board = await resetBoard(board);
-  deadStone = await resetDeadStone(deadStone);
+app.post('/data/reset',async (req,res)=>{
   
-  infor.board = board;
-  infor.deadStone = deadStone;
+  for(let i = 0; i < serverBoards.length; i++) {
+    if(req.body.data.room === serverBoards[i].roomName) {
+      serverBoards[i].board = await resetBoard(serverBoards[i].board);
+      serverBoards[i].deadStone = await resetDeadStone(serverBoards[i].deadStone); 
+
+      infor.board = serverBoards[i].board;
+      infor.deadStone = serverBoards[i].deadStone;
+      break;
+    }
+  }
 
   res.json(infor);
 })
 
-app.get('/data/board', async (req, res) => {
-  infor.board = board;
-  infor.deadStone = deadStone;
+app.post('/data/board', async (req, res) => {
+  for(let i = 0; i < serverBoards.length; i++) {
+    if(req.body.data.room === serverBoards[i].roomName) {
+      infor.board = serverBoards[i].board;
+      infor.deadStone = serverBoards[i].deadStone;
+      break;
+    }
+  }
 
   res.json(infor);
 })
 
 app.post('/data', async (req, res) => { // data를 받을때 (클릭한 x,y 좌표) + 현재 turn
   console.log(req.body.data);
+  
+  for(let i = 0; i < serverBoards.length; i++) {
+    if(req.body.data.room === serverBoards[i].roomName) {
+      serverBoards[i].board = await Rule(serverBoards[i].board, req.body.data, serverBoards[i].deadStone);
+      await res.json(board);
 
-  board = await Rule(board, req.body.data, deadStone);
-
-  await res.json(board);
+      break;
+    }
+  }
 })
 
 server.listen(PORT, () => console.log(`Server has started on port ${PORT}`));

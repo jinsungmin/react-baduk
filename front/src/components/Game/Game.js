@@ -19,9 +19,6 @@ const boardWidth = CELL_SIZE * BOARD_SIZE;
 
 let socket;
 
-//let killWhiteStone;
-//let killBlackStone;
-
 let grid = Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
   return Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
     return null;
@@ -56,10 +53,6 @@ const Game = ({ location }) => {
       setColor(color-1);
     })
 
-    if(color === 0) {
-      
-    }
-    
     socket.emit('join', { name, room }, () => {
     });
 
@@ -81,8 +74,10 @@ const Game = ({ location }) => {
     socket.on('turn', ({ turn }) => {
       setTurn(turn);
     })
-    getBoard();
     console.log('get turn:', turn);
+    if(room) {
+      getBoard();
+    }
   }, [turn]);
 
   // function for sending messages
@@ -101,7 +96,11 @@ const Game = ({ location }) => {
   }
 
   const resetGame = async () => {
-    await axios.get('/data/reset').then((data) => {
+    await axios.post('/data/reset', {
+      data: {
+        room: room,
+      }
+    }).then((data) => {
       console.log('reset');
       placeStone(0);
       //getBoard();
@@ -109,7 +108,11 @@ const Game = ({ location }) => {
   }
   // 착수 후 서버에서 받은 보드를 front에 적용하는 함수
   const getBoard = async () => { 
-    await axios.get('/data/board').then((data) => {
+    await axios.post('/data/board', {
+      data: {
+        room: room
+      }
+    }).then((data) => {
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
           grid[i][j].setState({
@@ -124,7 +127,11 @@ const Game = ({ location }) => {
   }
 
   const callBackServer = async (x, y) => {
-    await axios.get('/data').then((data) => {
+    await axios.post('/data/modify', {
+      data: {
+        room: room
+      }
+    }).then((data) => {
       
       if (turn === data.data.board[x][y].turn) {
         alert('It is a place that cannot be place');
@@ -149,6 +156,7 @@ const Game = ({ location }) => {
     console.log('post(turn,x,y): ', turn, x, y);
     await axios.post('/data', {
       data: {
+        room: room,
         turn: turn,
         x: x,
         y: y,
