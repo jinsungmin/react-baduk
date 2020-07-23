@@ -55,6 +55,10 @@ const Game = ({ location }) => {
       console.log('color:', color);
       setColor(color-1);
     })
+
+    if(color === 0) {
+      
+    }
     
     socket.emit('join', { name, room }, () => {
     });
@@ -114,8 +118,6 @@ const Game = ({ location }) => {
           })
         }
       }
-      //killWhiteStone = data.data.deadStone.whiteStone;
-      //killBlackStone = data.data.deadStone.blackStone;
       setKillWhiteStone(data.data.deadStone.whiteStone);
       setKillBlackStone(data.data.deadStone.blackStone);
     })

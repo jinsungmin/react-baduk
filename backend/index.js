@@ -18,6 +18,7 @@ const router = require('./router');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+let count = 0;
 
 io.on('connection', (socket) => {
   console.log('We have a new connection.');
@@ -27,9 +28,14 @@ io.on('connection', (socket) => {
 
     if(error) return callback(error);
 
-    console.log('user count:', users.length);
-
-    socket.emit('stoneColor', {color: users.length});
+    console.log('total user count:', users.length);
+    for(let i = 0; i < users.length; i++) {
+      if(user.room === users[i].room) {
+        count++;
+      }
+    }
+    socket.emit('stoneColor', {color: count});
+    count = 0;
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}` });
     socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name}, has joined!`});
     
@@ -81,6 +87,7 @@ app.use(bodyParser.json()); // for parsing application/json
 const BOARD_SIZE = 19;
 
 let board = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
+
 let deadStone = {
   blackStone: 0,
   whiteStone: 0,
