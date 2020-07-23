@@ -1,4 +1,4 @@
-async function ResetDeadStone(deadStone) {
+function ResetDeadStone(deadStone) {
   deadStone.blackStone = 0;
   deadStone.whiteStone = 0;
 

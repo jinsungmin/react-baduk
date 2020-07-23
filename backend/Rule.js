@@ -8,7 +8,8 @@ const dy = [0, 1, 0, -1];
 let deathCount = 0;
 
 async function Rule(grid, data, deadStone) {
-  
+  console.log('test: ',deadStone.whiteStone);
+
   grid[data.x][data.y].turn = data.turn + 1;
   grid[data.x][data.y].lived = true;
 

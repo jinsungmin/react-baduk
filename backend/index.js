@@ -54,7 +54,9 @@ io.on('connection', (socket) => {
     if(count === 1) {
       let tempBoard = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
       tempBoard= resetBoard(tempBoard);
-      serverBoards.push(new Data(user.room, tempBoard, resetDeadStone(deadStone)));
+      deadStone = resetDeadStone(deadStone);
+      console.log('11111111',deadStone);
+      serverBoards.push(new Data(user.room, tempBoard, deadStone));
     }
     
     console.log('total user count:', users.length);
@@ -164,6 +166,7 @@ app.post('/data', async (req, res) => { // data를 받을때 (클릭한 x,y 좌�
   
   for(let i = 0; i < serverBoards.length; i++) {
     if(req.body.data.room === serverBoards[i].roomName) {
+      console.log('deadStone:',serverBoards[i].deadStone);
       serverBoards[i].board = await Rule(serverBoards[i].board, req.body.data, serverBoards[i].deadStone);
       await res.json(board);
 

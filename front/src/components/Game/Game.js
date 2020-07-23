@@ -63,7 +63,6 @@ const Game = ({ location }) => {
     }
   }, [ENDPOINT, location.search]);
 
-
   useEffect(() => {
     socket.on('message', (message) => {
       setMessages([...messages, message]);
