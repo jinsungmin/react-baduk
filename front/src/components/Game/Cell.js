@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 const whiteStone = require('../../assets/img/white-stone.png');
 const blackStone = require('../../assets/img/black-stone.png');
+const tempStone = require('../../assets/img/temp-stone.png');
 
 export default class Cell extends Component {
   constructor(props) {

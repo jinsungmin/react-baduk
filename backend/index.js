@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
       let tempBoard = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
       tempBoard= resetBoard(tempBoard);
       deadStone = resetDeadStone(deadStone);
-      console.log('11111111',deadStone);
+
       serverBoards.push(new Data(user.room, tempBoard, deadStone));
     }
     
@@ -92,18 +92,41 @@ io.on('connection', (socket) => {
 
     callback();
   });
+  
+  socket.on('loseGame', () => {
+    const user = getUser(socket.id);
 
+    io.to(user.room).emit('message', { text: `${user.name} Lose!`});
+    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+    
+  });
+  
+  // 착수 후 보드 처리 socket 추가
   
 
-  // 착수 후 보드 처리 socket 추가
-
   socket.on('disconnect', () => {
-    const user = removeUser(socket.id);
+    user = removeUser(socket.id);
+    let userCount = 0;
+    for(let i = 0; i < users.length; i++) {
+      if(user.room === users[i].room) {
+        userCount++;
+      }
+    }
+
+    if(userCount === 0) {
+      const findItem = serverBoards.find(function(item) {
+        return item.roomName === user.room;
+      })
+      const idx = serverBoards.indexOf(findItem);
+      serverBoards.splice(idx, 1);
+    }
 
     if(user) {
       io.to(user.room).emit('message', { user: 'admin', text: `${user.name} has left.`});
     }
     console.log('User had left.');
+
+    console.log('serverBoardsLength:',serverBoards.length);
   });
 });
 

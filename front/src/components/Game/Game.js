@@ -34,6 +34,7 @@ const Game = ({ location }) => {
   const [messages, setMessages] = useState([]);
   const [killWhiteStone, setKillWhiteStone] = useState(0);
   const [killBlackStone, setKillBlackStone] = useState(0);
+  const [click, setClick] = useState(false);
 
   const [turn, setTurn] = useState(0);
   const ENDPOINT = 'localhost:5000';
@@ -49,9 +50,9 @@ const Game = ({ location }) => {
 
     resetGame();
 
-    socket.on('stoneColor', ({color}) => {
+    socket.on('stoneColor', ({ color }) => {
       console.log('color:', color);
-      setColor(color-1);
+      setColor(color - 1);
     })
 
     socket.emit('join', { name, room }, () => {
@@ -75,12 +76,16 @@ const Game = ({ location }) => {
       setTurn(turn);
     })
     console.log('get turn:', turn);
-    if(room) {
+    if (room) {
       getBoard();
     }
   }, [turn]);
 
   // function for sending messages
+
+  const getOutRoom = () => {
+    socket.emit('disconnect');
+  }
 
   const sendMessage = (event) => {
     event.preventDefault();
@@ -94,7 +99,12 @@ const Game = ({ location }) => {
     socket.emit('placeStone', turn, () => {
     });
   }
-  
+  // 상대방에게 승리 표시를 한 뒤 게임 리셋
+  const loseGame = () => {
+    socket.emit('loseGame');
+
+    resetGame();
+  }
 
   const resetGame = async () => {
     await axios.post('/data/reset', {
@@ -102,13 +112,13 @@ const Game = ({ location }) => {
         room: room,
       }
     }).then((data) => {
-      console.log('reset');
+      console.log('reset complete');
       placeStone(0);
       //getBoard();
     });
   }
   // 착수 후 서버에서 받은 보드를 front에 적용하는 함수
-  const getBoard = async () => { 
+  const getBoard = async () => {
     await axios.post('/data/board', {
       data: {
         room: room
@@ -133,13 +143,13 @@ const Game = ({ location }) => {
         room: room
       }
     }).then((data) => {
-      
+
       if (turn === data.data.board[x][y].turn) {
         alert('It is a place that cannot be place');
       }
 
       console.log('turn:', data.data.board[x][y].turn);
-      
+
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
           grid[i][j].setState({
@@ -153,25 +163,27 @@ const Game = ({ location }) => {
   };
 
   const postClickedCellInfor = async (x, y) => {
-    if(turn % 2 === color) {
-    console.log('post(turn,x,y): ', turn, x, y);
-    await axios.post('/data', {
-      data: {
-        room: room,
-        turn: turn,
-        x: x,
-        y: y,
+  
+      if (turn % 2 === color) {
+        console.log('post(turn,x,y): ', turn, x, y);
+        await axios.post('/data', {
+          data: {
+            room: room,
+            turn: turn,
+            x: x,
+            y: y,
+          }
+        })
+          .then(function (response) {
+            //console.log('callBack:',response);
+          })
+          .catch(function (error) {
+          });
+        await callBackServer(x, y);
+      } else {
+        alert('Not your Turn');
       }
-    })
-      .then(function (response) {
-        //console.log('callBack:',response);
-      })
-      .catch(function (error) {
-      });
-    await callBackServer(x, y);
-    } else {
-      alert('No your Turn');
-    }
+    
   }
 
   const renderBoard = () => {
@@ -204,7 +216,6 @@ const Game = ({ location }) => {
     });
   }
 
-  //console.log(message, messages);
   return (
     <div className="outerContainer">
       <div style={{
@@ -228,50 +239,68 @@ const Game = ({ location }) => {
       </div>
 
       <div style={{
-          position: 'absolute',
-          top: '2%',
-          left: '65%',
-        }}>
-          <button
-            onClick={resetGame}
-            style={{
-              width: 200,
-              height: 45,
-              border: '2px solid black',
-              fontSize: 20,
-              backgroundColor: 'white',
-              color: 'red',
-            }}
-          >
-            Reset
+        position: 'absolute',
+        top: '2%',
+        left: '65%',
+      }}>
+        <button
+          onClick={resetGame}
+          style={{
+            width: 200,
+            height: 45,
+            border: '2px solid black',
+            fontSize: 20,
+            backgroundColor: 'white',
+            color: 'red',
+          }}
+        >
+          Reset
         </button>
-        </div>
-        
+      </div>
+      <div style={{
+        position: 'absolute',
+        top: '90%',
+        left: '65%',
+      }}>
+        <button
+          onClick={loseGame}
+          style={{
+            width: 200,
+            height: 45,
+            border: '2px solid black',
+            fontSize: 20,
+            backgroundColor: 'white',
+            color: 'red',
+          }}
+        >
+          Give up
+          </button>
+      </div>
 
-        {color}
+      {color}
       <div className="container">
-        
-        <InfoBar room={room} />
+
+        <InfoBar room={room} getOutRoom={getOutRoom}/>
         <div className="stone">
           <div className="blackStone">
-            <img style={{width: 50, height: 50, marginLeft: '10%'}} src={blackStone} />
-            <div style={{marginTop: 10,}}>
-            {killBlackStone}<br/>
-            <CountDown turn={turn} color={0}/>
+            <img style={{ width: 50, height: 50, marginLeft: '10%' }} src={blackStone} />
+            <div style={{ marginTop: 10, }}>
+              {killBlackStone}<br />
+              <CountDown turn={turn} color={0} />
             </div>
-            
+
           </div>
           <div className="whiteStone">
-          <div style={{marginTop: 10, }}>
-            {killWhiteStone}<br/>
-            <CountDown turn={turn} color={1}/>
+            <div style={{ marginTop: 10, }}>
+              {killWhiteStone}<br />
+              <CountDown turn={turn} color={1} />
             </div>
-            <img style={{width: 50, height: 50, marginRight: '10%'}} src={whiteStone} />
-          </div>      
-        </div> 
+            <img style={{ width: 50, height: 50, marginRight: '10%' }} src={whiteStone} />
+          </div>
+        </div>
         <Messages messages={messages} name={name} />
         <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
-        
+
       </div>
     </div>
   )
