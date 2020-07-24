@@ -14,7 +14,7 @@ import Input from '../Input/Input';
 import Messages from '../Messages/Messages';
 import CountDown from '../CountDown/CountDown';
 
-const CELL_SIZE = 25;
+const CELL_SIZE = 28;
 const BOARD_SIZE = 19;
 const boardWidth = CELL_SIZE * BOARD_SIZE;
 
@@ -232,7 +232,7 @@ const Game = ({ location }) => {
           flexDirection: 'column',
           position: 'absolute',
           top: '50%',
-          left: '30%',
+          left: '40%',
           transform: 'translate(-50%, -50%)',
         }}>
           {renderBoard()}
