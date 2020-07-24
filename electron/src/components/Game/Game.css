@@ -1,0 +1,54 @@
+.outerContainer {
+  display: flex;
+  justify-content: flex-end;
+  
+  height: 100vh;
+  background-color: #EEEEEE;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-radius: 8px;
+  height: 90%;
+  width: 30%;
+  margin-right: 15px;
+}
+
+.stone {
+  display: flex;
+  height: 20%;
+  justify-content: space-between;
+}
+
+.blackStone {
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+  font-size: 20px;
+  text-align: center;
+}
+
+.whiteStone {
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 20px;
+  text-align: center;
+}
+/*
+@media (min-width: 320px) and (max-width: 480px) {
+  .container {
+    width: 30%;
+    height: 100%;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 1200px) {
+  .container {
+    width: 60%;
+  }
+}
+*/

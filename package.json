@@ -1,0 +1,25 @@
+{
+  "name": "baduk.ver.2.0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd backend && nodemon index.js",
+    "front": "cd electron && yarn react-start",
+    "electron": "cd electron && yarn electron-start",
+    "dev": "concurrently \"npm run server\" \"npm run front\"",
+    "app": "concurrently \"npm run server\" \"npm run front\" \"npm run electron\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "concurrently": "^5.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "nodemon": "^2.0.4",
+    "socket.io": "^2.3.0"
+  }
+}
