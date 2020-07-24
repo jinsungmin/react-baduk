@@ -12,6 +12,7 @@ import './Game.css';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import Messages from '../Messages/Messages';
+import CountDown from '../CountDown/CountDown';
 
 const CELL_SIZE = 36;
 const BOARD_SIZE = 19;
@@ -93,6 +94,7 @@ const Game = ({ location }) => {
     socket.emit('placeStone', turn, () => {
     });
   }
+  
 
   const resetGame = async () => {
     await axios.post('/data/reset', {
@@ -228,7 +230,7 @@ const Game = ({ location }) => {
       <div style={{
           position: 'absolute',
           top: '2%',
-          left: '50%',
+          left: '65%',
         }}>
           <button
             onClick={resetGame}
@@ -244,6 +246,8 @@ const Game = ({ location }) => {
             Reset
         </button>
         </div>
+        
+
         {color}
       <div className="container">
         
@@ -252,19 +256,22 @@ const Game = ({ location }) => {
           <div className="blackStone">
             <img style={{width: 50, height: 50, marginLeft: '10%'}} src={blackStone} />
             <div style={{marginTop: 10,}}>
-            {killBlackStone}
+            {killBlackStone}<br/>
+            <CountDown turn={turn} color={0}/>
             </div>
             
           </div>
           <div className="whiteStone">
           <div style={{marginTop: 10, }}>
-            {killWhiteStone}
+            {killWhiteStone}<br/>
+            <CountDown turn={turn} color={1}/>
             </div>
             <img style={{width: 50, height: 50, marginRight: '10%'}} src={whiteStone} />
           </div>      
         </div> 
         <Messages messages={messages} name={name} />
         <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+        
       </div>
     </div>
   )

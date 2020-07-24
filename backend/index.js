@@ -93,6 +93,8 @@ io.on('connection', (socket) => {
     callback();
   });
 
+  
+
   // 착수 후 보드 처리 socket 추가
 
   socket.on('disconnect', () => {
