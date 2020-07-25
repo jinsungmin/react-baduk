@@ -2,15 +2,31 @@
 
 .joinOuterContainer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   height: 100vh;
   align-items: center;
-  background-color: #1a1a1D;
+  background-color: white;
+}
+
+.existRoomContainer {
+  width: 70%;
+  height: 95vh;
+  display: flex;
+  border: 2px solid black;
+  border-radius: 20px;
+  margin-right: 5%;
+  margin-left: 3%; 
+}
+
+.roomListContainer {
+  margin: 3%;
 }
 
 .joinInnerContainer {
-  width: 15%;
+  width: 20%;
+  margin-right: 5%;
+  
 }
 
 .joinInput {
@@ -22,7 +38,7 @@
 .joinInputName {
   border-radius: 0;
   padding: 15px 20px;
-  width: 90%;
+  width: 80%;
   font-size: 20px;
 }
 
@@ -30,15 +46,15 @@
   margin-top: 20px;
   border-radius: 0;
   padding: 15px 20px;
-  width: 90%;
+  width: 80%;
   font-size: 20px;
 }
 
 .heading {
-  color: white;
+  color: black;
   font-size: 2.5em;
   padding-bottom: 10px;
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid black;
 }
 
 .button {

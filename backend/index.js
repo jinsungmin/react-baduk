@@ -38,10 +38,11 @@ let deadStone = {
 let board = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
 
 io.on('connection', (socket) => {
-  console.log('We have a new connection.');
-
+  
   socket.on('join', ({name, room}, callback) => {
     const { error, user } = addUser({id: socket.id, name, room });
+
+    console.log('We have a new connection.');
 
     if(error) return callback(error);
     
@@ -75,6 +76,17 @@ io.on('connection', (socket) => {
     callback();
   });
 
+  socket.on('getRoomList', () => {
+    console.log('users:',users);
+    if(users.length !== 0)
+      socket.emit('sendRoom', {users: users});
+    /*
+    for(let i = 0; i< users.length; i++) {
+      io.to(user.room).emit('message', { user: user.name, text: message});
+    }
+    */
+  })
+
   socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);
 
@@ -103,14 +115,16 @@ io.on('connection', (socket) => {
   
   // 착수 후 보드 처리 socket 추가
   
-
   socket.on('disconnect', () => {
     user = removeUser(socket.id);
+    console.log('remove:', user);
     let userCount = 0;
+
     for(let i = 0; i < users.length; i++) {
-      if(user.room === users[i].room) {
-        userCount++;
-      }
+      if(users[i].room)
+        if(user.room === users[i].room) {
+          userCount++;
+        }
     }
 
     if(userCount === 0) {

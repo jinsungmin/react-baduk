@@ -9,6 +9,10 @@ const Join = () => {
   
   return (
     <div className="joinOuterContainer">
+      <div className="existRoomContainer">
+        <div className="roomListContainer">
+        </div>
+      </div>
       <div className="joinInnerContainer">
         <h1 className="heading">Join</h1>
         <div><input placeholder="Name" className="joinInputName" type="text" onChange={(event) => setName(event.target.value)} /></div>

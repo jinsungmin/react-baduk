@@ -20,7 +20,6 @@ const boardWidth = CELL_SIZE * BOARD_SIZE;
 
 let socket;
 
-
 let grid = Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
   return Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
     return null;
@@ -35,8 +34,7 @@ const Game = ({ location }) => {
   const [messages, setMessages] = useState([]);
   const [killWhiteStone, setKillWhiteStone] = useState(0);
   const [killBlackStone, setKillBlackStone] = useState(0);
-  const [click, setClick] = useState(false);
-
+ 
   const [turn, setTurn] = useState(0);
   const ENDPOINT = 'localhost:5000';
 
@@ -284,17 +282,18 @@ const Game = ({ location }) => {
         <InfoBar room={room} getOutRoom={getOutRoom}/>
         <div className="stone">
           <div className="blackStone">
-            <img style={{ width: 30, height: 30, marginLeft: '10%' }} src={blackStone} />
-            <div style={{ marginTop: 10, }}>
-              {killBlackStone}<br />
-              
+            <img style={{ width: 30, height: 30, marginLeft: '10%' }} src={blackStone} />   
+            <div style={{fontSize: '1.1em', fontWeight: 'bold'}} >
+              {killBlackStone}<br/>
+              <CountDown turn={turn} color={0} />
             </div>
-
+            
           </div>
+
           <div className="whiteStone">
-            <div style={{ marginTop: 10, }}>
-              {killWhiteStone}<br />
-              
+            <div style={{ fontSize: '1.1em', fontWeight: 'bold' }}>
+              {killWhiteStone}<br/>
+              <CountDown turn={turn} color={1} />
             </div>
             <img style={{ width: 30, height: 30, marginRight: '10%' }} src={whiteStone} />
           </div>
