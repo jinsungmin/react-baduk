@@ -1,15 +1,15 @@
 const users = [];
 
-const addUser = ( {id, name, room }) => {
-  // JavaScript Mastery = javascriptmastery
-  
-  name = name.trim().toLowerCase();
-  room = room.trim().toLowerCase();
+const addUser = ( {id, name}) => {
+  // JavaScript Mastery = javascriptmastery  
+  room = null;
 
-  const existingUser = users.find((user) => user.room === room && user.name === name);
+  const existingUser = users.find((user) => user.name === name);
 
   if(existingUser) {
-    return { error: 'Username is taken'};
+    const idx = users.findIndex((user) => user.name === name);
+    users[idx].id = id;
+    return { existingUser };
   }
 
   const user = { id, name, room };

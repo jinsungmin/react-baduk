@@ -10,6 +10,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const { addUser, removeUser, getUser, getUsersInRoom, users } = require('./users.js');
+const { addRoom, removeRoom, getRoom, getRoom_name,  rooms } = require('./rooms.js');
 
 const PORT = process.env.PORT || 5000
 
@@ -19,7 +20,6 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
-let count = 0;
 const BOARD_SIZE = 19;
 
 let serverBoards = [];
@@ -39,15 +39,36 @@ let board = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
 
 io.on('connection', (socket) => {
   
+  socket.on('login', ({name}, callback) => {
+    console.log('login-user:', name);
+    let exist = 0;
+    for(let i = 0; i< users.length; i++) {
+      if(name === users[i].name) {
+        exist++;
+      }
+    }
+    if(exist === 0) {
+      const {error, user } = addUser({id: socket.id, name});
+      console.log('We have a new connection.');
+      if(error) return callback(error);
+    } else {
+      const {error, user } = addUser({id: socket.id, name});
+      if(error) return callback(error);
+    }
+    console.log('users:',users);
+    console.log('total user count:', users.length);
+    socket.emit('sendRoom', {users: users}); 
+  })
+
   socket.on('join', ({name, room}, callback) => {
-    const { error, user } = addUser({id: socket.id, name, room });
+    const { error, gameRoom } = addRoom({id: socket.id, name, room });
 
-    console.log('We have a new connection.');
-
+    console.log('id:', socket.id);
     if(error) return callback(error);
-    
-    for(let i = 0; i < users.length; i++) {
-      if(user.room === users[i].room) {
+    let count = 0;
+
+    for(let i = 0; i < rooms.length; i++) {
+      if(gameRoom.room === rooms[i].room) {
         count++;
       }
     }
@@ -57,21 +78,19 @@ io.on('connection', (socket) => {
       tempBoard= resetBoard(tempBoard);
       deadStone = resetDeadStone(deadStone);
 
-      serverBoards.push(new Data(user.room, tempBoard, deadStone));
+      serverBoards.push(new Data(gameRoom.room, tempBoard, deadStone));
     }
-    
-    console.log('total user count:', users.length);
     
     console.log('serverBoardsLength:',serverBoards.length);
 
     socket.emit('stoneColor', {color: count});
-    count = 0;
-    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}` });
-    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name}, has joined!`});
-    
-    socket.join(user.room);
 
-    io.to(user.room).emit('roomData', {room: user.room, users: getUsersInRoom(user.room)});
+    socket.emit('message', { user: 'admin', text: `${gameRoom.name}, welcome to the room ${gameRoom.room}` });
+    socket.broadcast.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name}, has joined!`});
+    
+    socket.join(gameRoom.room);
+
+    io.to(gameRoom.room).emit('roomData', {room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
     
     callback();
   });
@@ -88,60 +107,76 @@ io.on('connection', (socket) => {
   })
 
   socket.on('sendMessage', (message, callback) => {
-    const user = getUser(socket.id);
+    const gameRoom = getRoom(socket.id);
 
-    io.to(user.room).emit('message', { user: user.name, text: message});
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+    io.to(gameRoom.room).emit('message', { user: gameRoom.name, text: message});
+    io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
 
     callback();
   });
 
   socket.on('placeStone', (turn, callback) => {
-    const user = getUser(socket.id);
+    const gameRoom = getRoom(socket.id);
 
-    io.to(user.room).emit('turn', { turn: turn});
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+    io.to(gameRoom.room).emit('turn', { turn: turn});
+    io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
 
     callback();
   });
   
   socket.on('loseGame', () => {
-    const user = getUser(socket.id);
+    const gameRoom = getRoom(socket.id);
 
-    io.to(user.room).emit('message', { text: `${user.name} Lose!`});
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+    io.to(gameRoom.room).emit('message', { text: `${gameRoom.name} Lose!`});
+    io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
     
   });
   
   // 착수 후 보드 처리 socket 추가
-  
-  socket.on('disconnect', () => {
-    user = removeUser(socket.id);
-    console.log('remove:', user);
-    let userCount = 0;
 
-    for(let i = 0; i < users.length; i++) {
-      if(users[i].room)
-        if(user.room === users[i].room) {
+  socket.on('disconnect', () => {
+    
+  })
+
+  socket.on('back', (name, callback) => {
+    let ok = null;
+    for(let i = 0; i< users.length; i++) {
+      if(name === users[i].name) {
+        ok = users[i].name;
+      }
+    }
+    
+    let gameRoom = removeRoom(ok);
+    
+    let userCount = 0;
+    
+    for(let i = 0; i < rooms.length; i++) {
+      if(rooms[i].room)
+        if(gameRoom.room === rooms[i].room) {
           userCount++;
         }
     }
 
-    if(userCount === 0) {
+    //gameRoom = removeRoom(ok);
+    
+    if(userCount === 0) { // 방에서 나갈때 유저의 수가 한명이면 그 방에 대응하는 보드를 삭제
       const findItem = serverBoards.find(function(item) {
-        return item.roomName === user.room;
+        return item.roomName === gameRoom.room;
       })
       const idx = serverBoards.indexOf(findItem);
       serverBoards.splice(idx, 1);
     }
-
-    if(user) {
-      io.to(user.room).emit('message', { user: 'admin', text: `${user.name} has left.`});
+    /*
+    if(gameRoom) {
+      io.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name} has left.`});
     }
+    */   
     console.log('User had left.');
-
     console.log('serverBoardsLength:',serverBoards.length);
+
+    callback();
   });
+  
 });
 
 app.use(cors());

@@ -29,6 +29,8 @@ let grid = Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
 const Game = ({ location }) => {
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
+  const [id, setID] = useState('');
+
   const [color, setColor] = useState(0);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -41,6 +43,8 @@ const Game = ({ location }) => {
   useEffect(() => {
     console.log(location.search);
     const { name, room } = queryString.parse(location.search);
+    console.log('name:',name);
+    console.log('room', room);
 
     socket = io(ENDPOINT);
 
@@ -55,13 +59,14 @@ const Game = ({ location }) => {
     })
 
     socket.emit('join', { name, room }, () => {
+      setID(socket.id);
     });
-
+    /*
     return () => {
-      socket.emit('disconnect');
-
+      //socket.emit('disconnect');
       socket.off();
     }
+    */
   }, [ENDPOINT, location.search]);
 
   useEffect(() => {
@@ -81,12 +86,12 @@ const Game = ({ location }) => {
   }, [turn]);
 
   // function for sending messages
-
-  const getOutRoom = () => {
-    socket.emit('disconnect');
-    socket.emit('loseGame');
+  
+  const getOutRoom = (name) => {
+    socket.emit('back', name, () => {
+    });
   }
-
+  
   const sendMessage = (event) => {
     event.preventDefault();
 
@@ -99,10 +104,10 @@ const Game = ({ location }) => {
     socket.emit('placeStone', turn, () => {
     });
   }
+
   // 상대방에게 승리 표시
   const loseGame = () => {
     socket.emit('loseGame');
-
   }
 
   const resetGame = async () => {
@@ -279,7 +284,7 @@ const Game = ({ location }) => {
       
       <div className="container">
 
-        <InfoBar room={room} getOutRoom={getOutRoom}/>
+        <InfoBar name={name} room={room} getOutRoom={getOutRoom}/>
         <div className="stone">
           <div className="blackStone">
             <img style={{ width: 30, height: 30, marginLeft: '10%' }} src={blackStone} />   
