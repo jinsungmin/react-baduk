@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
     }
     console.log('users:',users);
     console.log('total user count:', users.length);
-    socket.emit('sendRoom', {users: users}); 
+    socket.emit('sendRoom', {rooms: rooms}); 
   })
 
   socket.on('join', ({name, room}, callback) => {
@@ -91,6 +91,7 @@ io.on('connection', (socket) => {
     socket.join(gameRoom.room);
 
     io.to(gameRoom.room).emit('roomData', {room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
+    io.emit('sendRoom', {rooms: rooms});
     
     callback();
   });
@@ -157,8 +158,6 @@ io.on('connection', (socket) => {
         }
     }
 
-    //gameRoom = removeRoom(ok);
-    
     if(userCount === 0) { // 방에서 나갈때 유저의 수가 한명이면 그 방에 대응하는 보드를 삭제
       const findItem = serverBoards.find(function(item) {
         return item.roomName === gameRoom.room;
@@ -166,11 +165,11 @@ io.on('connection', (socket) => {
       const idx = serverBoards.indexOf(findItem);
       serverBoards.splice(idx, 1);
     }
-    /*
+    
     if(gameRoom) {
       io.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name} has left.`});
     }
-    */   
+      
     console.log('User had left.');
     console.log('serverBoardsLength:',serverBoards.length);
 

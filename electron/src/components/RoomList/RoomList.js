@@ -40,9 +40,9 @@ const RoomList = ({ location }) => {
   }, [ENDPOINT, location.search]);
   
   useEffect(() => {
-    socket.on('sendRoom', ({users}) => {
-      console.log('users', users);
-      setroomList(users);
+    socket.on('sendRoom', ({rooms}) => {
+      console.log('rooms:', rooms);
+      setroomList(rooms);
     });
   }, [roomList]);
   
@@ -50,7 +50,7 @@ const RoomList = ({ location }) => {
     <div className="joinOuterContainer">
       <div className="existRoomContainer">
         <div className="roomListContainer">
-          
+          {roomList.map((i) => <div>User: {i.name} Room: {i.room}</div>)}
         </div>
       </div>
       <div className="joinInnerContainer">

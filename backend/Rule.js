@@ -53,16 +53,27 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
     
     let lived = surround(grid, dct);
     let banned = 0;
+    let compare = false;
     let pae = true;
     if (lived != 1) {
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
           if (lived == 2) { //기준 돌이 둘러싸여 있고 둘러싼 돌의 개수가 '<= 4' 일  경우
             if (dct[i][j]) {
-              pae = ban(grid, ox, oy, i, j);
+              for(let t = 0; t < 4; t++) {
+                if(isInside(i + dx[t], j + dy[t]) && dct[i + dx[t]][j + dy[t]]) {
+                  compare = true;
+                }
+              }
+              if(!compare) {
+                pae = ban(grid, ox, oy, i, j);
+                console.log('compare');
+              }
               if (pae) {
-                grid[ox][oy].kill_x = i;
-                grid[ox][oy].kill_y = j;
+                if(!compare) {
+                  grid[ox][oy].kill_x = i;
+                  grid[ox][oy].kill_y = j;
+                }
 
                 if (i != ox && j != oy)
                     banned = 1;
