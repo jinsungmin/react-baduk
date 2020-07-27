@@ -144,13 +144,14 @@ io.on('connection', (socket) => {
   });
   
   // 착수 후 보드 처리 socket 추가
-/*
+
   socket.on('disconnect', () => {
-    const user = removeUser(socket.id);
-    console.log('User had lefted', user);
-    console.log('total user count:', users.length);
+    console.log('disconnected!');
+    //const user = removeUser(socket.id);
+    //console.log('User had lefted', user);
+    //console.log('total user count:', users.length);
   })
-*/
+
   socket.on('back', (name, callback) => {
     let ok = null;
     for(let i = 0; i< users.length; i++) {
@@ -172,12 +173,13 @@ io.on('connection', (socket) => {
     
     if(gameRoom.id.length) {
       io.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name} has left.`});
+      io.to(gameRoom.room).emit('message', { user: 'admin', text: 'You Win!!'});
     }
       
     console.log('User had left.');
     console.log('serverBoardsLength:',serverBoards.length);
     io.emit('sendRoom', {rooms: rooms});
-    
+
     callback();
   });
   

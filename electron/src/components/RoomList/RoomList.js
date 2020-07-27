@@ -46,10 +46,14 @@ const RoomList = ({ location }) => {
   return(
     <div className="joinOuterContainer">
       <div className="existRoomContainer">
-        <div className="roomListContainer">
-          {roomList.map((i) => <div>User: {i.name.map((x) => x + ' ')} Room: {i.room}</div>)}
-        </div>
+          {roomList.map((i) => 
+            <div className="roomContainer">
+              ◎Room◎ {i.room}<br/>
+              User: {i.name.map((x) => x + ' ')} 
+            </div>
+          )}
       </div>
+     
       <div className="joinInnerContainer">
         <h1 className="heading">Join</h1>
         <div><input placeholder="Room" className="joinInputRoom" type="text" onChange={(event) => setRoom(event.target.value)} /></div>
