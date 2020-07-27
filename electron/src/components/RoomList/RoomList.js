@@ -5,8 +5,6 @@ import io from 'socket.io-client';
 
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import Room from '../Room/Room';
-
 import './RoomList.css';
 
 const ENDPOINT = 'localhost:5000';
@@ -26,7 +24,7 @@ const RoomList = ({ location }) => {
 
     socket = io(ENDPOINT);
     
-    socket.emit('login', name, () => {  
+    socket.emit('login', name, () => {
     });
 
     return () => {
@@ -39,16 +37,17 @@ const RoomList = ({ location }) => {
   
   useEffect(() => {
     socket.on('sendRoom', ({rooms}) => {
-      console.log('rooms:', rooms);
       setroomList(rooms);
     });
+    console.log('roomList:', roomList);
+    
   }, [roomList]);
   
   return(
     <div className="joinOuterContainer">
       <div className="existRoomContainer">
         <div className="roomListContainer">
-        {roomList.map((i) => <div>User: {i.name.name} Room: {i.room}</div>)}
+          {roomList.map((i) => <div>User: {i.name.map((x) => x + ' ')} Room: {i.room}</div>)}
         </div>
       </div>
       <div className="joinInnerContainer">

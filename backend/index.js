@@ -9,8 +9,8 @@ const cors = require('cors');
 
 const bodyParser = require('body-parser');
 
-const { addUser, removeUser, getUser, getUsersInRoom, users } = require('./users.js');
-const { addRoom, removeRoom, getRoom, getRoom_name, getIndex,  rooms } = require('./rooms.js');
+const { addUser, getUsersInRoom, users } = require('./users.js');
+const { addRoom, removeRoom, getRoom, getIndex, removeUserInRoom, rooms } = require('./rooms.js');
 
 const PORT = process.env.PORT || 5000
 
@@ -62,10 +62,21 @@ io.on('connection', (socket) => {
 
   socket.on('join', ({name, room}, callback) => {
     const { error, gameRoom } = addRoom({id: socket.id, name, room });
+    
+    const index = getIndex(socket.id);
+
+    io.to(gameRoom.id[index]).emit('index', { index: index});
+
+    if(index === 1) {
+      for(let i = 0; i<= index; i++) {
+        io.to(gameRoom.id[i]).emit('start', { start: index});
+      }
+    }
 
     console.log('roomList:', rooms);
 
     if(error) return callback(error);
+    
     let count = 0;
 
     for(let i = 0; i < rooms.length; i++) {
@@ -74,7 +85,7 @@ io.on('connection', (socket) => {
       }
     }
 
-    if(count === 1) {
+    if(index === 0) {
       let tempBoard = Array.from(Array(BOARD_SIZE), () => Array(BOARD_SIZE).fill(null));
       tempBoard= resetBoard(tempBoard);
       deadStone = resetDeadStone(deadStone);
@@ -84,8 +95,8 @@ io.on('connection', (socket) => {
     
     console.log('serverBoardsLength:',serverBoards.length);
 
-    socket.emit('message', { user: 'admin', text: `${gameRoom.name}, welcome to the room ${gameRoom.room}` });
-    socket.broadcast.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name}, has joined!`});
+    socket.emit('message', { user: 'admin', text: `${gameRoom.name[index]}, welcome to the room ${gameRoom.room}` });
+    socket.broadcast.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name[index]}, has joined!`});
     
     socket.join(gameRoom.room);
 
@@ -117,10 +128,8 @@ io.on('connection', (socket) => {
 
   socket.on('placeStone', (turn, callback) => {
     const gameRoom = getRoom(socket.id);
-    const index = getIndex(socket.id);
-
+    
     io.to(gameRoom.room).emit('turn', { turn: turn});
-    io.to(gameRoom.id[index]).emit('index', { index: index});
     io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
 
     callback();
@@ -135,13 +144,13 @@ io.on('connection', (socket) => {
   });
   
   // 착수 후 보드 처리 socket 추가
-
+/*
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
     console.log('User had lefted', user);
     console.log('total user count:', users.length);
   })
-
+*/
   socket.on('back', (name, callback) => {
     let ok = null;
     for(let i = 0; i< users.length; i++) {
@@ -150,18 +159,10 @@ io.on('connection', (socket) => {
       }
     }
     
-    let gameRoom = removeRoom(ok);
+    let gameRoom = removeUserInRoom(ok);
     
-    let userCount = 0;
-    
-    for(let i = 0; i < rooms.length; i++) {
-      if(rooms[i].room)
-        if(gameRoom.room === rooms[i].room) {
-          userCount++;
-        }
-    }
-
-    if(userCount === 0) { // 방에서 나갈때 유저의 수가 한명이면 그 방에 대응하는 보드를 삭제
+    if(gameRoom.id.length === 0) { // 방에서 나갈때 유저의 수가 한명이면 그 방에 대응하는 보드를 삭제
+      removeRoom(gameRoom.room);
       const findItem = serverBoards.find(function(item) {
         return item.roomName === gameRoom.room;
       })
@@ -169,13 +170,14 @@ io.on('connection', (socket) => {
       serverBoards.splice(idx, 1);
     }
     
-    if(gameRoom) {
+    if(gameRoom.id.length) {
       io.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name} has left.`});
     }
       
     console.log('User had left.');
     console.log('serverBoardsLength:',serverBoards.length);
-
+    io.emit('sendRoom', {rooms: rooms});
+    
     callback();
   });
   
@@ -193,8 +195,6 @@ let infor = {
   board: null,
   deadStone: null,
 }
-
-//board = resetBoard(board);
 
 app.post('/data/modify', async (req,res)=>{
   for(let i = 0; i < serverBoards.length; i++) {

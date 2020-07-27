@@ -29,9 +29,9 @@ let grid = Array.apply(null, Array(BOARD_SIZE)).map((el, idx) => {
 const Game = ({ location }) => {
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
-  const [id, setID] = useState('');
 
   const [index, setIndex] = useState(0);
+  const [start, setStart] = useState(-1);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [killWhiteStone, setKillWhiteStone] = useState(0);
@@ -54,7 +54,6 @@ const Game = ({ location }) => {
     resetGame();
 
     socket.emit('join', { name, room }, () => {
-      setID(socket.id);
     });
     /*
     return () => {
@@ -69,6 +68,13 @@ const Game = ({ location }) => {
       setMessages([...messages, message]);
     })
   }, [messages]);
+
+  useEffect(() => {
+    socket.on('start', ({start}) => {
+      setStart(start);
+    })
+    console.log('start:', start);
+  }, [start]);
 
   useEffect(() => {
     socket.on('turn', ({ turn }) => {
@@ -293,7 +299,7 @@ const Game = ({ location }) => {
             <img style={{ width: 30, height: 30, marginLeft: '10%' }} src={blackStone} />   
             <div style={{fontSize: '1.1em', fontWeight: 'bold'}} >
               {killBlackStone}<br/>
-              <CountDown turn={turn} color={0} />
+              <CountDown turn={turn} color={0} start={start}/>
             </div>
             
           </div>
@@ -301,7 +307,7 @@ const Game = ({ location }) => {
           <div className="whiteStone">
             <div style={{ fontSize: '1.1em', fontWeight: 'bold' }}>
               {killWhiteStone}<br/>
-              <CountDown turn={turn} color={1} />
+              <CountDown turn={turn} color={1} start={start}/>
             </div>
             <img style={{ width: 30, height: 30, marginRight: '10%' }} src={whiteStone} />
           </div>

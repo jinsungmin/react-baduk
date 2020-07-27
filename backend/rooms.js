@@ -24,22 +24,26 @@ const addRoom = ( {id, name, room }) => {
   return { gameRoom }
 }
 
-const removeRoom = (name) => {
-  const index = rooms.findIndex((gameRoom) => gameRoom.name === name);
-  console.log('index:', index);
-  if(index !== -1) {
-    return rooms.splice(index, 1)[0];
+const removeUserInRoom = (name) => {
+  for(let i = 0; i< rooms.length; i++) {
+    for(let j = 0; j < rooms[i].name.length; j++) {
+      if(name === rooms[i].name[j]) {
+        rooms[i].name.splice(j, 1);
+        rooms[i].id.splice(j, 1);
+
+        return rooms[i];
+      }
+    }
   }
 }
 
-const getRoom_name = (name) => {
-  const index = rooms.findIndex((gameRoom) => gameRoom.name === name);
+const removeRoom = (room) => {
+  const index = rooms.findIndex((gameRoom) => gameRoom.room === room);
+
   if(index !== -1) {
-    return rooms[index];
+    rooms.splice(index, 1)[0];
   }
 }
-
-//const getRoom = (id) => rooms.find((room) => room.id === id);
 
 const getRoom = (id) => {
   for(let i = 0; i< rooms.length; i++) {
@@ -61,4 +65,4 @@ const getIndex = (id) => {
 
 //const getUsersInRoom = (room) => users.filter((user) => user.room === room);
 
-module.exports = { addRoom, removeRoom, getRoom, getRoom_name, getIndex,rooms }
+module.exports = { addRoom, removeRoom, getRoom, getIndex,removeUserInRoom, rooms }
