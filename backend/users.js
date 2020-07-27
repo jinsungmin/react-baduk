@@ -2,8 +2,7 @@ const users = [];
 
 const addUser = ( {id, name}) => {
   // JavaScript Mastery = javascriptmastery  
-  room = null;
-
+  
   const existingUser = users.find((user) => user.name === name);
 
   if(existingUser) {
@@ -12,7 +11,7 @@ const addUser = ( {id, name}) => {
     return { existingUser };
   }
 
-  const user = { id, name, room };
+  const user = { id, name};
 
   users.push(user);
 
@@ -29,7 +28,4 @@ const removeUser = (id) => {
 
 const getUser = (id) => users.find((user) => user.id === id);
 
-
-const getUsersInRoom = (room) => users.filter((user) => user.room === room);
-
-module.exports = { addUser, removeUser, getUser, getUsersInRoom, users }
+module.exports = { addUser, removeUser, getUser, users }

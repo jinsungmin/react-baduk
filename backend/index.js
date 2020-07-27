@@ -9,7 +9,7 @@ const cors = require('cors');
 
 const bodyParser = require('body-parser');
 
-const { addUser, getUsersInRoom, users } = require('./users.js');
+const { addUser, removeUser, getUser, users } = require('./users.js');
 const { addRoom, removeRoom, getRoom, getIndex, removeUserInRoom, rooms } = require('./rooms.js');
 
 const PORT = process.env.PORT || 5000
@@ -100,7 +100,6 @@ io.on('connection', (socket) => {
     
     socket.join(gameRoom.room);
 
-    io.to(gameRoom.room).emit('roomData', {room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
     io.emit('sendRoom', {rooms: rooms});
     
     callback();
@@ -121,7 +120,6 @@ io.on('connection', (socket) => {
     const gameRoom = getRoom(socket.id);
 
     io.to(gameRoom.room).emit('message', { user: gameRoom.name, text: message});
-    io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
 
     callback();
   });
@@ -130,8 +128,7 @@ io.on('connection', (socket) => {
     const gameRoom = getRoom(socket.id);
     
     io.to(gameRoom.room).emit('turn', { turn: turn});
-    io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
-
+  
     callback();
   });
   
@@ -139,7 +136,6 @@ io.on('connection', (socket) => {
     const gameRoom = getRoom(socket.id);
 
     io.to(gameRoom.room).emit('message', { text: `${gameRoom.name} Lose!`});
-    io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
     
   });
   
