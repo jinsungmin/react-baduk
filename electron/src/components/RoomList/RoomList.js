@@ -16,7 +16,7 @@ let socket;
 const RoomList = ({ location }) => {
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
-  const [roomList, setroomList] = useState([{id: '', name:'', room:''}]);
+  const [roomList, setroomList] = useState([{id: '', name: [{name: ''}], room:''}]);
   
   useEffect(() => {
     console.log(location.search);
@@ -29,14 +29,12 @@ const RoomList = ({ location }) => {
     socket.emit('login', name, () => {  
     });
 
-    /*
     return () => {
       socket.emit('disconnect');
 
       socket.off();
     }
-    */
-
+    
   }, [ENDPOINT, location.search]);
   
   useEffect(() => {
@@ -50,7 +48,7 @@ const RoomList = ({ location }) => {
     <div className="joinOuterContainer">
       <div className="existRoomContainer">
         <div className="roomListContainer">
-          {roomList.map((i) => <div>User: {i.name} Room: {i.room}</div>)}
+        {roomList.map((i) => <div>User: {i.name.name} Room: {i.room}</div>)}
         </div>
       </div>
       <div className="joinInnerContainer">

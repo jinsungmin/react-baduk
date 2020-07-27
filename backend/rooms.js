@@ -6,7 +6,18 @@ const addRoom = ( {id, name, room }) => {
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
 
-  const gameRoom = { id, name, room };
+  for(let i = 0; i < rooms.length; i++) {
+    if(room === rooms[i].room) {
+      rooms[i].name.push(name);
+      rooms[i].id.push(id);
+
+      const gameRoom = rooms[i];
+
+      return { gameRoom }
+    }
+  }
+
+  const gameRoom = { id:[id], name:[name], room };
 
   rooms.push(gameRoom);
 
@@ -28,8 +39,26 @@ const getRoom_name = (name) => {
   }
 }
 
-const getRoom = (id) => rooms.find((room) => room.id === id);
+//const getRoom = (id) => rooms.find((room) => room.id === id);
+
+const getRoom = (id) => {
+  for(let i = 0; i< rooms.length; i++) {
+    for(let j = 0; j < rooms[i].id.length; j++) {
+      if(id === rooms[i].id[j])
+        return rooms[i];
+    }
+  }
+}
+
+const getIndex = (id) => {
+  for(let i = 0; i< rooms.length; i++) {
+    for(let j = 0; j < rooms[i].id.length; j++) {
+      if(id === rooms[i].id[j])
+        return j;
+    }
+  }
+}
 
 //const getUsersInRoom = (room) => users.filter((user) => user.room === room);
 
-module.exports = { addRoom, removeRoom, getRoom, getRoom_name, rooms }
+module.exports = { addRoom, removeRoom, getRoom, getRoom_name, getIndex,rooms }

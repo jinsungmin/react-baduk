@@ -10,7 +10,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const { addUser, removeUser, getUser, getUsersInRoom, users } = require('./users.js');
-const { addRoom, removeRoom, getRoom, getRoom_name,  rooms } = require('./rooms.js');
+const { addRoom, removeRoom, getRoom, getRoom_name, getIndex,  rooms } = require('./rooms.js');
 
 const PORT = process.env.PORT || 5000
 
@@ -63,7 +63,8 @@ io.on('connection', (socket) => {
   socket.on('join', ({name, room}, callback) => {
     const { error, gameRoom } = addRoom({id: socket.id, name, room });
 
-    console.log('id:', socket.id);
+    console.log('roomList:', rooms);
+
     if(error) return callback(error);
     let count = 0;
 
@@ -82,8 +83,6 @@ io.on('connection', (socket) => {
     }
     
     console.log('serverBoardsLength:',serverBoards.length);
-
-    socket.emit('stoneColor', {color: count});
 
     socket.emit('message', { user: 'admin', text: `${gameRoom.name}, welcome to the room ${gameRoom.room}` });
     socket.broadcast.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name}, has joined!`});
@@ -118,8 +117,10 @@ io.on('connection', (socket) => {
 
   socket.on('placeStone', (turn, callback) => {
     const gameRoom = getRoom(socket.id);
+    const index = getIndex(socket.id);
 
     io.to(gameRoom.room).emit('turn', { turn: turn});
+    io.to(gameRoom.id[index]).emit('index', { index: index});
     io.to(gameRoom.room).emit('roomData', { room: gameRoom.room, users: getUsersInRoom(gameRoom.room)});
 
     callback();
@@ -136,7 +137,9 @@ io.on('connection', (socket) => {
   // 착수 후 보드 처리 socket 추가
 
   socket.on('disconnect', () => {
-    
+    const user = removeUser(socket.id);
+    console.log('User had lefted', user);
+    console.log('total user count:', users.length);
   })
 
   socket.on('back', (name, callback) => {

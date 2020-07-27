@@ -31,7 +31,7 @@ const Game = ({ location }) => {
   const [room, setRoom] = useState('');
   const [id, setID] = useState('');
 
-  const [color, setColor] = useState(0);
+  const [index, setIndex] = useState(0);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [killWhiteStone, setKillWhiteStone] = useState(0);
@@ -52,11 +52,6 @@ const Game = ({ location }) => {
     setRoom(room);
 
     resetGame();
-
-    socket.on('stoneColor', ({ color }) => {
-      console.log('color:', color);
-      setColor(color - 1);
-    })
 
     socket.emit('join', { name, room }, () => {
       setID(socket.id);
@@ -84,6 +79,14 @@ const Game = ({ location }) => {
       getBoard();
     }
   }, [turn]);
+
+  useEffect(() => {
+    socket.on('index', ({index}) => {
+      setIndex(index);
+    })
+    console.log('Index:', index);
+  }, [index]);
+
 
   // function for sending messages
   
@@ -168,7 +171,7 @@ const Game = ({ location }) => {
 
   const postClickedCellInfor = async (x, y) => {
   
-      if (turn % 2 === color) {
+      if (turn % 2 === index) {
         console.log('post(turn,x,y): ', turn, x, y);
         await axios.post('/data', {
           data: {
