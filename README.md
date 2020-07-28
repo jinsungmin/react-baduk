@@ -1,2 +1,2 @@
 ### electron desktop app
-<img width="759" alt="electron-game" src="https://user-images.githubusercontent.com/48236363/88413911-01eb7800-ce17-11ea-85e6-8c6aff1b60ee.PNG">
+<img width="760" alt="baduk" src="https://user-images.githubusercontent.com/48236363/88625919-a5bd7800-d0e4-11ea-8ab0-297265949fd0.PNG">
