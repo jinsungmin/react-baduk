@@ -118,7 +118,7 @@ const Game = ({ location }) => {
   const loseGame = () => {
     socket.emit('loseGame');
   }
-
+  
   const resetGame = async () => {
     await axios.post('/data/reset', {
       data: {

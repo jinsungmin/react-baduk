@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 
+import userIcon from '../../assets/img/user-icon.png';
+import roomIcon from '../../assets/img/room-icon.png';
+
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 import './RoomList.css';
@@ -48,17 +51,17 @@ const RoomList = ({ location }) => {
       <div className="existRoomContainer">
           {roomList.map((i) => 
             <div className="roomContainer">
-              ◎Room◎ {i.room}<br/>
-              User: {i.name.map((x) => x + ' ')} 
+              <img style={{ width: 22, height: 22, marginLeft: '3%', marginRight: '1%', marginTop: '2%' }} src={roomIcon} /> {i.room}
+              <br/><img style={{ width: 22, height: 22, marginRight: '1%', marginTop: '2%' }} src={userIcon} /> {i.name.map((x) => x + ' ')} 
             </div>
           )}
       </div>
      
       <div className="joinInnerContainer">
-        <h1 className="heading">Join</h1>
+        <h1 className="heading">Room Number</h1>
         <div><input placeholder="Room" className="joinInputRoom" type="text" onChange={(event) => setRoom(event.target.value)} /></div>
         <Link onClick={event => (!room || !name) ? event.preventDefault() : null} to={`/game?name=${name.name}&room=${room}`}>
-          <button className="button" type="submit">Sign In</button>
+          <button className="button" type="submit">Enter</button>
         </Link>
       </div>
     </div>

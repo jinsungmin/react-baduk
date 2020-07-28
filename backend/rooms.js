@@ -35,6 +35,7 @@ const removeUserInRoom = (name) => {
       }
     }
   }
+  return -1;
 }
 
 const removeRoom = (room) => {

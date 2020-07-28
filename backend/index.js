@@ -143,12 +143,36 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('disconnected!');
-    //const user = removeUser(socket.id);
-    //console.log('User had lefted', user);
-    //console.log('total user count:', users.length);
+    let gameRoom;
+    const user = removeUser(socket.id);
+    if(user !== -1) {
+      gameRoom = removeUserInRoom(user.name);
+    } else {
+      gameRoom = -1;
+    }
+    if(gameRoom !== -1) {
+      if(gameRoom.id.length === 0) { // 방에서 나갈때 유저의 수가 한명이면 그 방에 대응하는 보드를 삭제
+        removeRoom(gameRoom.room);
+        const findItem = serverBoards.find(function(item) {
+          return item.roomName === gameRoom.room;
+        })
+        const idx = serverBoards.indexOf(findItem);
+        serverBoards.splice(idx, 1);
+      }
+      
+      if(gameRoom.id.length) {
+        io.to(gameRoom.room).emit('message', { user: 'admin', text: `${gameRoom.name} has left.`});
+        io.to(gameRoom.room).emit('message', { user: 'admin', text: 'You Win!!'});
+      }
+        
+      console.log('User had left.');
+      console.log('serverBoardsLength:',serverBoards.length);
+    }
+    io.emit('sendRoom', {rooms: rooms});
   })
 
   socket.on('back', (name, callback) => {
+    /*
     let ok = null;
     for(let i = 0; i< users.length; i++) {
       if(name === users[i].name) {
@@ -177,6 +201,7 @@ io.on('connection', (socket) => {
     io.emit('sendRoom', {rooms: rooms});
 
     callback();
+    */
   });
   
 });
