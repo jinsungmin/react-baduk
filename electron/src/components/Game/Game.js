@@ -8,6 +8,8 @@ import whiteStone from '../../assets/img/white-stone.png';
 import Cell from './Cell';
 import axios from 'axios';
 
+import Modal from '../SetGame/MyModal';
+
 import './Game.css';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
@@ -36,7 +38,12 @@ const Game = ({ location }) => {
   const [messages, setMessages] = useState([]);
   const [killWhiteStone, setKillWhiteStone] = useState(0);
   const [killBlackStone, setKillBlackStone] = useState(0);
- 
+  const [gameTime, setgameTime] = useState('');
+
+  const [modal, setModal] = useState(false);
+  const [time, setTime] = useState('');
+  const [color, setColor] = useState('');
+
   const [turn, setTurn] = useState(0);
   const ENDPOINT = 'localhost:5000';
 
@@ -69,11 +76,14 @@ const Game = ({ location }) => {
     })
   }, [messages]);
 
+ 
   useEffect(() => {
     socket.on('start', ({start}) => {
-      setStart(start);
+      setStart(start);  
     })
     console.log('start:', start);
+    console.log('curTurn:', turn);
+    console.log('curIndex:', index);
   }, [start]);
 
   useEffect(() => {
@@ -90,9 +100,32 @@ const Game = ({ location }) => {
     socket.on('index', ({index}) => {
       setIndex(index);
     })
-    console.log('Index:', index);
   }, [index]);
 
+  useEffect(() => {
+    socket.on('modal', () => {
+      setModal(true);
+    })
+  }, [modal]);
+
+  useEffect(() => {
+    socket.on('modal_time', ({time}) => {
+      setTime(time);
+    })
+  }, [time]);
+
+  useEffect(() => {
+    socket.on('modal_color', ({color}) => {
+      setColor(color);
+    })
+  }, [color]);
+
+  useEffect(() => {
+    socket.on('gameTime', ({time}) => {
+      setgameTime(time);
+    })
+    console.log('gameTime:', gameTime);
+  }, [gameTime]);
 
   // function for sending messages
   
@@ -114,11 +147,31 @@ const Game = ({ location }) => {
     });
   }
 
+  const checkGameSet = (time, color) => {
+    console.log('gameSet:', time ,color);
+    if(index === 0) {
+      socket.emit('sendGameSet', {time, color}, () => {
+      });
+    } else {
+      socket.emit('gameSet', {time, color}, () => {
+      });
+    }
+  }
+
   // 상대방에게 승리 표시
   const loseGame = () => {
     socket.emit('loseGame');
   }
-  
+
+  const handleCloseModal = () => {
+    setModal(false);
+  };
+
+  const onSearchSubmit = (time, color) => {
+    console.log("please:", time, color);
+    checkGameSet(time, color);
+  }
+
   const resetGame = async () => {
     await axios.post('/data/reset', {
       data: {
@@ -176,8 +229,8 @@ const Game = ({ location }) => {
   };
 
   const postClickedCellInfor = async (x, y) => {
-  
-      if (turn % 2 === index) {
+      console.log('check:', turn, index, start);
+      if (turn % 2 === index && start === 1) {
         console.log('post(turn,x,y): ', turn, x, y);
         await axios.post('/data', {
           data: {
@@ -292,14 +345,17 @@ const Game = ({ location }) => {
 
       
       <div className="container">
-
+        {
+        modal && <Modal
+          onClose={handleCloseModal} onSubmit={onSearchSubmit} time={time} color={color}/>
+        }
         <InfoBar name={name} room={room} getOutRoom={getOutRoom}/>
         <div className="stone">
           <div className="blackStone">
             <img style={{ width: 30, height: 30, marginLeft: '10%' }} src={blackStone} />   
             <div style={{fontSize: '1.1em', fontWeight: 'bold'}} >
               {killBlackStone}<br/>
-              <CountDown turn={turn} color={0} start={start}/>
+              <CountDown turn={turn} color={0} start={start} gameTime = {gameTime}/>
             </div>
             
           </div>
@@ -307,7 +363,7 @@ const Game = ({ location }) => {
           <div className="whiteStone">
             <div style={{ fontSize: '1.1em', fontWeight: 'bold' }}>
               {killWhiteStone}<br/>
-              <CountDown turn={turn} color={1} start={start}/>
+              <CountDown turn={turn} color={1} start={start} gameTime = {gameTime}/>
             </div>
             <img style={{ width: 30, height: 30, marginRight: '10%' }} src={whiteStone} />
           </div>

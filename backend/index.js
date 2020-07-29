@@ -68,9 +68,10 @@ io.on('connection', (socket) => {
     io.to(gameRoom.id[index]).emit('index', { index: index});
 
     if(index === 1) {
-      for(let i = 0; i<= index; i++) {
-        io.to(gameRoom.id[i]).emit('start', { start: index});
-      }
+      //for(let i = 0; i<= index; i++) {
+      //  io.to(gameRoom.id[i]).emit('start', { start: index});
+      //}
+      io.to(gameRoom.id[0]).emit('modal');
     }
 
     console.log('roomList:', rooms);
@@ -115,6 +116,36 @@ io.on('connection', (socket) => {
     }
     */
   })
+
+  // socket.id이 속한 room의 index 1에 전달 
+
+  socket.on('sendGameSet', ({time, color}, callback) => {
+    const gameRoom = getRoom(socket.id);
+
+    io.to(gameRoom.id[1]).emit('modal');
+    io.to(gameRoom.id[1]).emit('modal_time', {time: time});
+    io.to(gameRoom.id[1]).emit('modal_color',{color: color});
+
+    callback();
+  });
+
+  socket.on('gameSet', ({time, color}, callback) => {
+    const gameRoom = getRoom(socket.id);
+    
+    if(color === 'black') {
+      io.to(gameRoom.id[0]).emit('index',{index: 1});
+      io.to(gameRoom.id[1]).emit('index',{index: 0});
+    } else {
+      io.to(gameRoom.id[0]).emit('index',{index: 0});
+      io.to(gameRoom.id[1]).emit('index',{index: 1});
+    }
+    for(let i = 0; i< 2; i++) {
+      io.to(gameRoom.id[i]).emit('gameTime',{time: time});
+      io.to(gameRoom.id[i]).emit('start', { start: 1});
+    }
+    callback();
+
+  });
 
   socket.on('sendMessage', (message, callback) => {
     const gameRoom = getRoom(socket.id);
@@ -172,7 +203,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('back', (name, callback) => {
-    /*
+    
     let ok = null;
     for(let i = 0; i< users.length; i++) {
       if(name === users[i].name) {
@@ -201,7 +232,6 @@ io.on('connection', (socket) => {
     io.emit('sendRoom', {rooms: rooms});
 
     callback();
-    */
   });
   
 });

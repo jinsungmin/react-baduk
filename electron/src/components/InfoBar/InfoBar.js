@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import './InfoBar.css';
 
@@ -12,7 +13,7 @@ const InfoBar = ({ name, room, getOutRoom }) => (
       <h3>Room.{room}</h3>
     </div>
     <div className="rightInnerContainer">
-      <a href={`/roomList?name=${name}`}><img onClick={() => getOutRoom(name)} src={closeIcon} style={{width: 25, height: 25}} alt="close image" /></a>
+      <Link to={`/roomList?name=${name}`}><img onClick={() => getOutRoom(name)} src={closeIcon} style={{width: 25, height: 25}} alt="close image" /></Link>
       
     </div>
   </div>

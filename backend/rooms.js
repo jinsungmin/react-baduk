@@ -2,7 +2,7 @@ const rooms = [];
 
 const addRoom = ( {id, name, room }) => {
   // JavaScript Mastery = javascriptmastery
-  
+  console.log('data:', id, name, room);
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
 

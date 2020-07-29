@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-//import './InfoBar.css';
-
-const CountDown = ({turn, color, start}) => {
-  const [counter, setCounter] = useState(1800);
+const CountDown = ({turn, color, start, gameTime}) => {
+  const [counter, setCounter] = useState(Number(gameTime) * 60);
   
+  useEffect(() => {
+    setCounter(Number(gameTime) * 60);
+  }, [gameTime]);
+
   useEffect(() => {
     if(turn % 2 === color && start === 1) {
     const timer = counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
