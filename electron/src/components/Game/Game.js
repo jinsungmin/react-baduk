@@ -41,8 +41,8 @@ const Game = ({ location }) => {
   const [gameTime, setgameTime] = useState('');
 
   const [modal, setModal] = useState(false);
-  const [time, setTime] = useState('');
-  const [color, setColor] = useState('');
+  const [time, setTime] = useState('10');
+  const [color, setColor] = useState('auto');
 
   const [turn, setTurn] = useState(0);
   const ENDPOINT = 'localhost:5000';
@@ -112,6 +112,7 @@ const Game = ({ location }) => {
     socket.on('modal_time', ({time}) => {
       setTime(time);
     })
+    console.log('time:',time);
   }, [time]);
 
   useEffect(() => {
