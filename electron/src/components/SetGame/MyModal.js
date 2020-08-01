@@ -45,32 +45,7 @@ const MyModal = ({ onClose, onSubmit, time, color }) => {
       }
     }    
   }, [color]);
-  /*
-  let showTime;
-  let showColor;
-  let colorValue;
-  */
-  /*
-  if(time === '60') {
-    showTime = '1시간';
-  } else {
-    showTime = time + '분';
-  }
-
-  if(color === 'auto') {
-    showColor = '자동돌가림';
-    colorValue = 'auto';
-  } else {
-    if(color === 'black') {
-      showColor = '백돌';
-      colorValue = 'white';
-    }
-    if(color === 'white') {
-      showColor = '흑돌';
-      colorValue = 'black';
-    }
-  }    
-  */
+  
   const onFormSubmit = (e) => {
     e.preventDefault();
     onSubmit(timeValue, colorValue);

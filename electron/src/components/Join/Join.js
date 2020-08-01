@@ -2,32 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import './Join.css';
-import MyModal from '../SetGame/MyModal';
-import ModalPortal from '../../ModalPortal';
-
-import Modal from '../SetGame/Modal';
 
 const Join = () => {
   const [name, setName] = useState('');
-  const [modal, setModal] = useState(false);
   
-  const handleOpenModal = () => {
-    setModal(true);
-  };
-  const handleCloseModal = () => {
-    setModal(false);
-  };
-
   return (
     <div className="joinOuterContainer">
       <div className="existRoomContainer">
-        <div className="roomListContainer">
-        <button onClick={handleOpenModal}>Open Modal</button>
-        {
-        modal && <MyModal
-          onClose={handleCloseModal} />
-        }
-          
+        <div className="roomListContainer">  
         </div>
       </div>
       <div className="joinInnerContainer">
