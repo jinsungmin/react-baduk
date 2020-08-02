@@ -253,6 +253,16 @@ const Game = ({ location }) => {
     
   }
 
+  const judgeGame = async () => {
+    await axios.post('/data/judge', {
+      data: {
+        room: room,
+      }
+    }).then((data) => {
+      console.log('judge complete');
+    });
+  }
+
   const renderBoard = () => {
     return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
@@ -341,6 +351,26 @@ const Game = ({ location }) => {
           }}
         >
           Give up
+          </button>
+      </div>
+
+      <div style={{
+        position: 'absolute',
+        top: '80%',
+        left: '65%',
+      }}>
+        <button
+          onClick={judgeGame}
+          style={{
+            width: 100,
+            height: 45,
+            border: '2px solid black',
+            fontSize: 20,
+            backgroundColor: 'white',
+            color: 'red',
+          }}
+        >
+          Judge
           </button>
       </div>
 

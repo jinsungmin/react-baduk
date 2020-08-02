@@ -1,5 +1,6 @@
 const Rule = require('./Rule.js');
 const resetBoard = require('./Reset.js');
+const Judge = require('./judge.js');
 const resetDeadStone = require('./ResetDeadStone.js');
 
 const express = require('express');
@@ -288,6 +289,15 @@ app.post('/data/board', async (req, res) => {
   }
 
   res.json(infor);
+})
+
+app.post('/data/judge', async (req, res) => {
+  for(let i = 0; i < serverBoards.length; i++) {
+    if(req.body.data.room === serverBoards[i].roomName) {
+      Judge(serverBoards[i].board, serverBoards[i].deadStone);
+      break;
+    }
+  }
 })
 
 app.post('/data', async (req, res) => { // data를 받을때 (클릭한 x,y 좌표) + 현재 turn
