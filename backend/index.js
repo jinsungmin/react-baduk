@@ -170,6 +170,18 @@ io.on('connection', (socket) => {
     io.to(gameRoom.room).emit('message', { text: `${gameRoom.name} Lose!`});
     
   });
+
+  socket.on('judgeWinner', ({black, white}, callback) => {
+    const gameRoom = getRoom(socket.id);
+    io.to(gameRoom.room).emit('message', { text: `Black: ${black} White: ${white}`});
+    if(black > white) {
+      io.to(gameRoom.room).emit('message', { text: `Black is Win!!`});
+    } else {
+      io.to(gameRoom.room).emit('message', { text: `White is Win!!`});
+    }
+
+    callback();
+  });
   
   // 착수 후 보드 처리 socket 추가
 
@@ -292,12 +304,15 @@ app.post('/data/board', async (req, res) => {
 })
 
 app.post('/data/judge', async (req, res) => {
+  let result = [];
   for(let i = 0; i < serverBoards.length; i++) {
     if(req.body.data.room === serverBoards[i].roomName) {
-      Judge(serverBoards[i].board, serverBoards[i].deadStone);
+      result = await Judge(serverBoards[i].board, serverBoards[i].deadStone);
       break;
     }
   }
+  console.log('post:', result);
+  res.json(result);
 })
 
 app.post('/data', async (req, res) => { // data를 받을때 (클릭한 x,y 좌표) + 현재 turn

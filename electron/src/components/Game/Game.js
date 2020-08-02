@@ -159,6 +159,12 @@ const Game = ({ location }) => {
     }
   }
 
+  const judgeWinner = (black, white) => {
+    socket.emit('judgeWinner', {black, white}, () => {
+      
+    })
+  }
+
   // 상대방에게 승리 표시
   const loseGame = () => {
     socket.emit('loseGame');
@@ -260,6 +266,9 @@ const Game = ({ location }) => {
       }
     }).then((data) => {
       console.log('judge complete');
+      console.log('blackCount:', data.data[0]);
+      console.log('whiteCount:', data.data[1]);
+      judgeWinner(data.data[0], data.data[1]);
     });
   }
 

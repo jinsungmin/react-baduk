@@ -65,6 +65,12 @@ async function Judge(map, deadStone) {
   console.log("black Count: " + blackCount);
   console.log("white Count: " + whiteCount);
 
+  let result = [];
+  result.push(blackCount);
+  result.push(whiteCount);
+  console.log('result', result);
+  return result;
+
   async function countBlackStone() {
     for(let i = 0; i< blackQueue.length; i++) {
       blackCount += blackQueue[i].score;
