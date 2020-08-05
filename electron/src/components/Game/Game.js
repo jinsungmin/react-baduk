@@ -272,6 +272,18 @@ const Game = ({ location }) => {
     });
   }
 
+  const presentJudgeGame = async () => {
+    await axios.post('/data/judge', {
+      data: {
+        room: room,
+      }
+    }).then((data) => {
+      console.log('judge complete');
+      console.log('blackCount:', data.data[0]);
+      console.log('whiteCount:', data.data[1]);
+    });
+  }
+
   const renderBoard = () => {
     return Array.apply(null, Array(BOARD_SIZE)).map((el, rowIdx) => {
       let cellList = Array.apply(null, Array(BOARD_SIZE)).map((el, colIdx) => {
@@ -316,7 +328,7 @@ const Game = ({ location }) => {
           backgroundColor: '#DDDDDD',
           flexDirection: 'column',
           position: 'absolute',
-          top: '50%',
+          top: '47%',
           left: '40%',
           transform: 'translate(-50%, -50%)',
         }}>
@@ -345,18 +357,18 @@ const Game = ({ location }) => {
       </div>
       <div style={{
         position: 'absolute',
-        top: '90%',
-        left: '65%',
+        top: '92%',
+        left: '67%',
       }}>
         <button
           onClick={loseGame}
           style={{
-            width: 100,
-            height: 45,
-            border: '2px solid black',
-            fontSize: 20,
+            width: 80,
+            height: 30,
+            border: '1px solid black',
+            fontSize: 10,
             backgroundColor: 'white',
-            color: 'red',
+            color: 'black',
           }}
         >
           Give up
@@ -365,21 +377,40 @@ const Game = ({ location }) => {
 
       <div style={{
         position: 'absolute',
-        top: '80%',
-        left: '65%',
+        top: '92%',
+        left: '57%',
       }}>
         <button
           onClick={judgeGame}
           style={{
-            width: 100,
-            height: 45,
-            border: '2px solid black',
-            fontSize: 20,
+            width: 80,
+            height: 30,
+            border: '1px solid black',
+            fontSize: 10,
             backgroundColor: 'white',
-            color: 'red',
+            color: 'black',
           }}
         >
-          Judge
+          계가 신청
+          </button>
+      </div>
+      <div style={{
+        position: 'absolute',
+        top: '92%',
+        left: '47%',
+      }}>
+        <button
+          onClick={presentJudgeGame}
+          style={{
+            width: 80,
+            height: 30,
+            border: '1px solid black',
+            fontSize: 10,
+            backgroundColor: 'white',
+            color: 'black',
+          }}
+        >
+          형세 판단
           </button>
       </div>
 
@@ -391,8 +422,8 @@ const Game = ({ location }) => {
         }
         <InfoBar name={name} room={room} getOutRoom={getOutRoom}/>
         <div className="stone">
-          <div className="blackStone">
-            <img style={{ width: 30, height: 30, marginLeft: '10%' }} src={blackStone} />   
+          <div className="blackStone" style={{marginTop: '3%' }}>
+            <img style={{ width: 30, height: 30, marginLeft: '10%'}} src={blackStone} />   
             <div style={{fontSize: '1.1em', fontWeight: 'bold'}} >
               {killBlackStone}<br/>
               <CountDown turn={turn} color={0} start={start} gameTime = {gameTime}/>
@@ -400,12 +431,12 @@ const Game = ({ location }) => {
             
           </div>
 
-          <div className="whiteStone">
+          <div className="whiteStone" style={{marginTop: '3%' }}>
             <div style={{ fontSize: '1.1em', fontWeight: 'bold' }}>
               {killWhiteStone}<br/>
               <CountDown turn={turn} color={1} start={start} gameTime = {gameTime}/>
             </div>
-            <img style={{ width: 30, height: 30, marginRight: '10%' }} src={whiteStone} />
+            <img style={{ width: 30, height: 30, marginRight: '10%', marginTop: '3%' }} src={whiteStone} />
           </div>
         </div>
         <Messages messages={messages} name={name} />

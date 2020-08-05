@@ -31,9 +31,10 @@
 .roomContainer {
   width: 40%;
   height: 10vh;
-  background-color: #eeffee;
+  background-color: #eeeeee;
   display: flex;
-  border: 2px solid gray;
+  border: 2px solid #000033;
+  border-radius: 15px 15px 15px 15px;
   margin: 1.5%;
   align-items: flex-start;
   text-align: center;
