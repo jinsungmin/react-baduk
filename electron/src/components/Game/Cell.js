@@ -50,56 +50,43 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display:'flex'
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid #ffcc33',
                   borderRight: '0.5px solid #ffcc33',
-                
                 }}>
-                  
                 </div>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderLeft: '0.5px solid #ffcc33',
                 }}>
-
                 </div>
               </div>
-
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display:'flex'
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid #ffcc33',
                   borderRight: '0.5px solid black',
                 }}>
-
                 </div>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
-
                 </div>
               </div>
-
             </div>
           )
         } else if (this.props.x === 18) {  // 바둑판 오른쪽 위 끝
@@ -107,45 +94,39 @@ export default class Cell extends Component {
             <div
               onClick={this.handleClick} 
               style={{
-              width: this.props.width + 1,
-              height: this.props.height + 1,
-              backgroundColor: '#ffcc33',
+                width: this.props.width + 1,
+                height: this.props.height + 1,
+                backgroundColor: '#ffcc33',
             }}>
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderRight: '0.5px solid #ffcc33',
                 }}>
-
                 </div>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid #ffcc33',
                   borderLeft: '0.5px solid #ffcc33',
                 }}>
-
                 </div>
               </div>
 
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -154,15 +135,11 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid #ffcc33',
                   borderLeft: '0.5px solid black',
                 }}>
-
                 </div>
               </div>
-
             </div>
           )
         } else {  // 바둑판 가장위 
@@ -177,38 +154,32 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderRight: '0.5px solid #ffcc33',
                 }}>
-
                 </div>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderLeft: '0.5px solid #ffcc33',
                 }}>
-
                 </div>
               </div>
 
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -217,19 +188,14 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
-
                 </div>
               </div>
-
             </div>
           )
         }
-
       } else if (this.props.y === 18) {
         if (this.props.x === 0) {  // 바둑판 왼쪽 아래 끝
           return (
@@ -243,12 +209,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid #ffcc33',
                   borderRight: '0.5px solid black',
                 }}>
@@ -257,8 +222,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -269,12 +232,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid #ffcc33',
                   borderRight: '0.5px solid #ffcc33',
                 }}>
@@ -283,8 +245,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderLeft: '0.5px solid #ffcc33',
                 }}>
@@ -306,12 +266,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -320,8 +279,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid #ffcc33',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -332,12 +289,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderRight: '0.5px solid #ffcc33',
                 }}>
@@ -346,8 +302,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid #ffcc33',
                   borderLeft: '0.5px solid #ffcc33',
                 }}>
@@ -369,12 +323,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -383,8 +336,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -395,12 +346,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderRight: '0.5px solid #ffcc33',
                 }}>
@@ -409,8 +359,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderLeft: '0.5px solid #ffcc33',
                 }}>
@@ -435,12 +383,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid #ffcc33',
                   borderRight: '0.5px solid black',
                 }}>
@@ -449,8 +396,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -461,12 +406,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid #ffcc33',
                   borderRight: '0.5px solid black',
                 }}>
@@ -475,8 +419,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -498,12 +440,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -512,8 +453,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid #ffcc33',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -524,12 +463,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -538,8 +476,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid #ffcc33',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -561,12 +497,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -575,8 +510,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderBottom: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -587,12 +520,11 @@ export default class Cell extends Component {
               <div style={{
                 width: this.props.width + 1,
                 height: this.props.height / 2 + 0.5,
+                display: 'flex',
               }}>
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderRight: '0.5px solid black',
                 }}>
@@ -601,8 +533,6 @@ export default class Cell extends Component {
                 <div style={{
                   width: this.props.width / 2,
                   height: this.props.height / 2,
-                  display: 'inline-block',
-                  float: 'left',
                   borderTop: '0.5px solid black',
                   borderLeft: '0.5px solid black',
                 }}>
@@ -652,9 +582,6 @@ export default class Cell extends Component {
             </div>
           )
         }
-      
     }
   }
-
-
 }
