@@ -15,7 +15,7 @@ async function Rule(grid, data, deadStone) {
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
       // 입력한 돌과 색이 같지 않은 돌 && 살아있는 돌 
-      if ((grid[i][j].turn % 2 != grid[data.x][data.y].turn % 2) && grid[i][j].lived) {
+      if ((grid[i][j].turn % 2 !== grid[data.x][data.y].turn % 2) && grid[i][j].lived) {
         await checkLife(grid, i, j, data.x, data.y); // 입력한 돌이 잡을 수 있는 돌을 판별
       }
     }
@@ -32,7 +32,7 @@ async function Rule(grid, data, deadStone) {
 }
 
 function addDeadStone(grid, data, deadStone) {
-  if (grid[data.x][data.y].turn % 2 == 0) {
+  if (grid[data.x][data.y].turn % 2 === 0) {
     deadStone.whiteStone += deathCount;
   } else {
     deadStone.blackStone += deathCount;
@@ -40,7 +40,8 @@ function addDeadStone(grid, data, deadStone) {
   deathCount = 0;
 }
 
-function isInside(x, y) {
+
+function isInside(x, y) { // 좌표가 보드 범위 내에 있는지 판별하는 함수
   return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
 }
 
@@ -55,10 +56,10 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
     let banned = 0;
     let compare = false;
     let pae = true;
-    if (lived != 1) {
+    if (lived !== 1) {
       for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
-          if (lived == 2) { //기준 돌이 둘러싸여 있고 둘러싼 돌의 개수가 '<= 4' 일  경우
+          if (lived === 2) { //기준 돌이 둘러싸여 있고 둘러싼 돌의 개수가 '<= 4' 일  경우 (상하좌우로 빈 공간이 없는 경우)
             if (dct[i][j]) {
               for(let t = 0; t < 4; t++) {
                 if(isInside(i + dx[t], j + dy[t]) && dct[i + dx[t]][j + dy[t]]) {
@@ -75,7 +76,7 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
                   grid[ox][oy].kill_y = j;
                 }
 
-                if (i != ox && j != oy)
+                if (i !== ox && j !== oy)
                     banned = 1;
               }
             }
@@ -83,13 +84,12 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
 
           if (dct[i][j]) {  // 기준 돌로 부터 연속된 돌들
             if (pae) {
-              if (i == ox && j == oy && banned != 1) { // 자살수 금지.
+              if (i === ox && j === oy && banned !== 1) { // 자살수 금지.
                 grid[ox][oy].lived = false;
                 grid[ox][oy].turn -= 1;
                 //alert('banned');
-
               } else {  // 죽은 돌 제거
-                if (x != ox || y != oy) {
+                if (x !== ox || y !== oy) {
                   grid[i][j].lived = false;
                   deathCount += 1;
                 }
@@ -108,15 +108,14 @@ function checkLife(grid, x, y, ox, oy) { // 죽은 돌 제거
   }
 }
 
-function ban(grid, x, y, v, w) {
+function ban(grid, x, y, v, w) {  // 자살수를 판별하는 함수
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
-      if (grid[i][j].turn == grid[x][y].turn - 1 && grid[x][y].turn >= 2) {
-        if (grid[i][j].kill_x + i == v + x &&
-          grid[i][j].kill_y + j == w + y) {
+      if (grid[i][j].turn === grid[x][y].turn - 1 && grid[x][y].turn >= 2) {
+        if (grid[i][j].kill_x + i === v + x &&
+          grid[i][j].kill_y + j === w + y) {
           return false;
         }
-
       }
     }
   }
@@ -129,15 +128,15 @@ function surround(grid, dct) {
 
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
-      if (dct[i][j]) {
+      if (dct[i][j]) {  // 살아있는 돌
         for (let v = 0; v < 4; v++) {
           if (isInside(i + dx[v], j + dy[v])) {
             // 인접한 것중 기준 돌과 다른 것 전부 체크
-            if ((grid[i + dx[v]][j + dy[v]].turn % 2 != grid[i][j].turn % 2) || !grid[i + dx[v]][j + dy[v]].lived) {
+            if ((grid[i + dx[v]][j + dy[v]].turn % 2 !== grid[i][j].turn % 2) || !grid[i + dx[v]][j + dy[v]].lived) {
               sur++;
             }
             // 인접한 것중 기준 돌과 다른 색의 돌 전부 체크
-            if ((grid[i + dx[v]][j + dy[v]].turn % 2 != grid[i][j].turn % 2) && grid[i + dx[v]][j + dy[v]].lived) {
+            if ((grid[i + dx[v]][j + dy[v]].turn % 2 !== grid[i][j].turn % 2) && grid[i + dx[v]][j + dy[v]].lived) {
               surStone++;
             }
           }
@@ -146,7 +145,7 @@ function surround(grid, dct) {
     }
   }
 
-  if ((surStone == sur) && surStone != 0) {
+  if ((surStone === sur) && surStone !== 0) {
     if (surStone <= 4) {
       return 2;
     }
@@ -160,7 +159,7 @@ function findSameStone(grid, value, i, j, dct) { // 찾을 돌과 이어져 있�
   for (let v = 0; v < 4; v++) {
     if (isInside(i + dx[v], j + dy[v])
       && grid[i + dx[v]][j + dy[v]].lived     // 살아있는돌
-      && (grid[i + dx[v]][j + dy[v]].turn % 2 == value)   // 같은 색의 돌
+      && (grid[i + dx[v]][j + dy[v]].turn % 2 === value)   // 같은 색의 돌
       && !dct[i + dx[v]][j + dy[v]]) {  // 탐색하지 않은 돌
       dct[i + dx[v]][j + dy[v]] = true;
       findSameStone(grid, value, i + dx[v], j + dy[v], dct);
